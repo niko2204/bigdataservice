@@ -38,6 +38,7 @@ API 키 없이 `data/sample/`의 교육용 데이터를 이용해 모든 화면�
 
 - `courses/`: 10개 Course 강의·실습·과제·퀴즈
 - `notebooks/`: Google Colab/Jupyter 단계별 실습
+- `notebooks/data_analysis/`: 이론·수학·개인별 데이터 분석 실습 8종
 - `src/`: 수집, 전처리, 분석, 추천 코드
 - `app/`: Streamlit 다중 페이지 서비스
 - `data/`: 샘플·원본·중간·완료 데이터
@@ -53,3 +54,6 @@ API 키 없이 `data/sample/`의 교육용 데이터를 이용해 모든 화면�
 
 데이터의 수치와 추천 결과는 교육용이며 실제 창업 의사결정의 근거로 단독 사용하지 않습니다.
 
+## 데이터 분석 실기
+
+프로젝트만 제출하는 방식의 한계를 보완하기 위해 학번 기반 개인별 데이터, 손계산, 통계 검증, 코드 수정 시연과 구두 확인을 포함합니다. 자세한 운영 방법은 `docs/data_analysis_curriculum.md`와 `evaluation/data_analysis_practical_rubric.md`를 참고하세요.

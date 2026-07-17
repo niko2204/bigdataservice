@@ -1,11 +1,12 @@
 streamlit>=1.46
 pandas>=2.2
 numpy>=2.0
+matplotlib>=3.9
 plotly>=6.0
 folium>=0.19
 streamlit-folium>=0.24
 requests>=2.32
 python-dotenv>=1.1
 scikit-learn>=1.6
+scipy>=1.14
 pytest>=8.0
-
