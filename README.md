@@ -57,3 +57,7 @@ API 키 없이 `data/sample/`의 교육용 데이터를 이용해 모든 화면�
 ## 데이터 분석 실기
 
 프로젝트만 제출하는 방식의 한계를 보완하기 위해 학번 기반 개인별 데이터, 손계산, 통계 검증, 코드 수정 시연과 구두 확인을 포함합니다. 자세한 운영 방법은 `docs/data_analysis_curriculum.md`와 `evaluation/data_analysis_practical_rubric.md`를 참고하세요.
+
+## 학생 학습 방법
+
+모든 Course에는 상세 `lecture_note.md`, 단계별 과제, 확인 문제와 해설이 있습니다. Notebook은 완성 예제 → 따라하기 → 독립 연습 → 자가점검 순서로 구성했습니다. 전체 학습 경로와 오류 해결 방법은 `docs/student_learning_guide.md`를 참고하세요.
