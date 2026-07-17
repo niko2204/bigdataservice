@@ -4,15 +4,24 @@ Notebook은 두 묶음으로 구성된다.
 
 ## 프로젝트 따라하기
 
-1. 01_pandas_basics.ipynb: 데이터 구조, 필터, 집계, 시각화
-2. 02_public_api.ipynb: API, JSON, 페이지네이션, 원본 보존
-3. 03_preprocessing_eda.ipynb: 품질, 통합, 질문 중심 EDA
-4. 04_geospatial.ipynb: 좌표, 지도, 거리와 공간 한계
-5. 05_recommendation.ipynb: 정규화, 가중합, 추천 근거와 민감도
+1. [01. pandas 기초](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/notebooks/01_pandas_basics.ipynb): 데이터 구조, 필터, 집계, 시각화
+2. [02. 공공데이터 API](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/notebooks/02_public_api.ipynb): API, JSON, 페이지네이션, 원본 보존
+3. [03. 전처리와 EDA](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/notebooks/03_preprocessing_eda.ipynb): 품질, 통합, 질문 중심 EDA
+4. [04. 공간 분석](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/notebooks/04_geospatial.ipynb): 좌표, 지도, 거리와 공간 한계
+5. [05. 입지 추천](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/notebooks/05_recommendation.ipynb): 정규화, 가중합, 추천 근거와 민감도
 
 ## 수학·통계·개인 실기
 
-data_analysis 폴더의 Lab 00~07은 평균·분산부터 신뢰구간, 가설검정, 회귀, 군집과 개인 종합 실기까지 다룬다.
+아래 제목을 클릭하면 해당 Lab이 Colab에서 바로 열린다.
+
+1. [Lab 00. 수학과 NumPy](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/notebooks/data_analysis/00_math_numpy.ipynb)
+2. [Lab 01. 데이터 품질](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/notebooks/data_analysis/01_data_quality.ipynb)
+3. [Lab 02. 기술통계](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/notebooks/data_analysis/02_descriptive_statistics.ipynb)
+4. [Lab 03. 표본과 신뢰구간](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/notebooks/data_analysis/03_sampling_confidence_interval.ipynb)
+5. [Lab 04. 가설검정과 상관](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/notebooks/data_analysis/04_hypothesis_correlation.ipynb)
+6. [Lab 05. 회귀분석](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/notebooks/data_analysis/05_regression.ipynb)
+7. [Lab 06. 군집과 PCA](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/notebooks/data_analysis/06_clustering_pca.ipynb)
+8. [Lab 07. 종합 실기평가](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/notebooks/data_analysis/07_practical_assessment.ipynb)
 
 ## 권장 학습 방법
 

@@ -8,18 +8,18 @@
 
 ## 학습 구성
 
-| Course | 내용 | 핵심 산출물 |
-|---:|---|---|
-| 01 | 프로젝트 이해와 환경 구축 | 문제 정의서 |
-| 02 | Python 데이터 분석 | 분석 노트북 |
-| 03 | 공공데이터 API | 수집 코드 |
-| 04 | 데이터 전처리·통합 | 통합 데이터셋 |
-| 05 | 탐색적 분석·시각화 | EDA 보고서 |
-| 06 | 지도·공간 분석 | 상권 지도 |
-| 07 | 입지 평가·추천 | 추천 모델 |
-| 08 | 데이터베이스 | SQLite DB |
-| 09 | Streamlit 서비스 | 웹 서비스 |
-| 10 | 통합·발표 | 최종 결과물 |
+| Course | 내용 | Jupyter 강의노트 | 핵심 산출물 |
+|---:|---|---|---|
+| 01 | 프로젝트 이해와 환경 구축 | [Colab에서 열기](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/courses/course01_project_setup/lecture_note.ipynb) | 문제 정의서 |
+| 02 | Python 데이터 분석 | [Colab에서 열기](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/courses/course02_python_data_analysis/lecture_note.ipynb) | 분석 노트북 |
+| 03 | 공공데이터 API | [Colab에서 열기](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/courses/course03_public_data_api/lecture_note.ipynb) | 수집 코드 |
+| 04 | 데이터 전처리·통합 | [Colab에서 열기](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/courses/course04_data_preprocessing/lecture_note.ipynb) | 통합 데이터셋 |
+| 05 | 탐색적 분석·시각화 | [Colab에서 열기](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/courses/course05_eda_visualization/lecture_note.ipynb) | EDA 보고서 |
+| 06 | 지도·공간 분석 | [Colab에서 열기](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/courses/course06_geospatial_analysis/lecture_note.ipynb) | 상권 지도 |
+| 07 | 입지 평가·추천 | [Colab에서 열기](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/courses/course07_recommendation_model/lecture_note.ipynb) | 추천 모델 |
+| 08 | 데이터베이스 | [Colab에서 열기](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/courses/course08_database/lecture_note.ipynb) | SQLite DB |
+| 09 | Streamlit 서비스 | [Colab에서 열기](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/courses/course09_streamlit_service/lecture_note.ipynb) | 웹 서비스 |
+| 10 | 통합·발표 | [Colab에서 열기](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/courses/course10_final_project/lecture_note.ipynb) | 최종 결과물 |
 
 Course는 주차가 아닙니다. 필요한 시점에 학습하고, 나머지 수업은 팀 프로젝트·상담·코드 리뷰로 운영합니다.
 
@@ -60,4 +60,4 @@ API 키 없이 `data/sample/`의 교육용 데이터를 이용해 모든 화면�
 
 ## 학생 학습 방법
 
-모든 Course에는 Jupyter 형식의 `lecture_note.ipynb`, 단계별 과제, 확인 문제와 해설이 있습니다. 같은 내용의 `lecture_note.md`는 GitHub에서 빠르게 읽고 Notebook을 다시 생성하는 원본입니다. 전체 학습 경로와 오류 해결 방법은 `docs/student_learning_guide.md`를 참고하세요.
+위 표의 **Colab에서 열기**를 누르면 해당 Course의 Jupyter Notebook이 바로 실행됩니다. 같은 내용의 `lecture_note.md`는 GitHub 열람과 Notebook 재생성을 위한 원본입니다. 전체 학습 경로와 오류 해결 방법은 [학생 자율학습 가이드](docs/student_learning_guide.md)를 참고하세요.
