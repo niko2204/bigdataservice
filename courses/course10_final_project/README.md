@@ -1,5 +1,7 @@
 # Course 10. 서비스 통합과 최종 프로젝트
 
+[![Open Lecture Note in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/courses/course10_final_project/lecture_note.ipynb)
+
 수집부터 화면까지 전체 파이프라인을 통합하고 테스트, 재현성, 접근성, 윤리, 발표를 점검한다. 다른 팀 사용자가 설명 없이 핵심 기능을 수행할 수 있어야 한다.
 
-`lecture_note.md`의 Definition of Done과 테스트 전략을 기준으로 기능을 하나씩 닫는다. 최종 발표 전 새 환경 실행, 사용자 과업 테스트와 Lab 07 개인 실기를 완료한다.
+`lecture_note.ipynb`의 Definition of Done과 테스트 전략을 기준으로 기능을 하나씩 닫는다. 최종 발표 전 새 환경 실행, 사용자 과업 테스트와 Lab 07 개인 실기를 완료한다.

@@ -5,7 +5,8 @@
 각 Course 폴더에는 다음 자료가 있다.
 
 - `README.md`: 학습목표와 권장 순서
-- `lecture_note.md`: 개념, 수식, 완성 코드, 오류와 실습 절차
+- `lecture_note.ipynb`: 개념, 수식과 직접 실행할 Python 예제 셀
+- `lecture_note.md`: GitHub 열람과 Notebook 재생성을 위한 동일 내용 원본
 - `slides.md`: 수업 중 핵심 요약
 - `assignment.md`: 제출 과제와 평가기준
 - `quiz.md`: 스스로 답할 확인 문제
@@ -31,7 +32,7 @@ Notebook에는 완성 예제, 따라하기, 독립 연습과 자가점검이 순
 ## 3. 한 Course를 공부하는 방법
 
 1. README에서 목표와 선수지식을 확인한다.
-2. lecture_note의 수식은 작은 숫자로 손계산한다.
+2. lecture_note.ipynb를 열고 수식을 작은 숫자로 손계산한다.
 3. 완성 코드를 그대로 실행하기 전에 결과를 예상한다.
 4. 코드 한 줄 또는 파라미터를 바꾸고 결과 차이를 기록한다.
 5. Notebook TODO를 본인 학번 데이터로 완성한다.
@@ -72,4 +73,3 @@ Notebook에는 완성 예제, 따라하기, 독립 연습과 자가점검이 순
 - [ ] 관찰·해석·한계를 구분했다.
 - [ ] Restart & Run All을 통과했다.
 - [ ] 임의의 셀을 말로 설명하고 조건을 바꾸어 수정할 수 있다.
-

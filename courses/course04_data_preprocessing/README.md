@@ -1,9 +1,11 @@
 # Course 04. 데이터 전처리와 통합
 
+[![Open Lecture Note in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/courses/course04_data_preprocessing/lecture_note.ipynb)
+
 중복, 결측, 자료형, 단위, 행정동 이름을 정제하고 서로 다른 데이터의 공간·시간 기준을 맞춘다. 전처리 전후 행 수와 결측률을 기록한다.
 
 ## 필수 이론·실습
 
 Lab 01에서 학번별 데이터의 결측·중복·이상값을 찾는다. IQR 경계를 계산하고 평균, 중앙값, 업종별 중앙값 대체 결과를 비교한 후 처리 방법을 선택한다.
 
-`lecture_note.md`에는 결측 메커니즘, 병합 카디널리티와 검증 코드가 포함되어 있다. Lab의 TODO를 시작하기 전에 완성 예제를 실행하고 처리 전후 통계를 기록한다.
+`lecture_note.ipynb`에는 결측 메커니즘, 병합 카디널리티와 검증 코드 셀이 포함되어 있다. Lab의 TODO를 시작하기 전에 예제를 실행하고 처리 전후 통계를 기록한다.

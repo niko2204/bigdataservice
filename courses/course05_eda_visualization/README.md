@@ -1,5 +1,7 @@
 # Course 05. 탐색적 분석과 시각화
 
+[![Open Lecture Note in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/courses/course05_eda_visualization/lecture_note.ipynb)
+
 분포, 비교, 관계, 이상값을 분석 질문에 맞는 차트로 표현한다. 그래프마다 제목, 단위, 출처, 기준일과 한 문장의 결론을 포함한다.
 
 ## 필수 이론·실습
@@ -8,4 +10,4 @@
 - Lab 04: 가설검정, p값, Cohen d, Pearson 상관계수
 - 통계적 유의성과 실질적 중요성을 구분하여 서술한다.
 
-`lecture_note.md`의 EDA 질문 설계와 통계적 추론 설명을 먼저 학습한다. Lab 03·04에서는 계산 결과만 제출하지 않고 가정, 효과크기와 대표성의 한계를 함께 작성한다.
+`lecture_note.ipynb`의 EDA 질문 설계와 통계적 추론 셀을 먼저 학습한다. Lab 03·04에서는 계산 결과만 제출하지 않고 가정, 효과크기와 대표성의 한계를 함께 작성한다.

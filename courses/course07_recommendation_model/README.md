@@ -1,5 +1,7 @@
 # Course 07. 입지 평가와 추천 모델
 
+[![Open Lecture Note in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/niko2204/bigdataservice/blob/main/courses/course07_recommendation_model/lecture_note.ipynb)
+
 잠재고객, 유동인구, 경쟁, 접근성, 비용을 0~1로 정규화하고 가중합 점수를 만든다. 사용자가 가중치를 바꾸었을 때 순위가 얼마나 변하는지 민감도 분석을 수행한다.
 
 ## 필수 이론·실습
@@ -8,4 +10,4 @@
 - Lab 06: 거리, 표준화, K-means 목적함수, silhouette와 PCA
 - 모델 결과보다 데이터 분할, 가정, 오차 분석과 해석을 중점 평가한다.
 
-`lecture_note.md`의 정규화와 가중합을 손으로 계산한 뒤 Lab 05·06으로 진행한다. 세 가지 가중치 시나리오와 표준화 전후 결과를 반드시 비교한다.
+`lecture_note.ipynb`의 정규화와 가중합 셀을 실행하고 손계산한 뒤 Lab 05·06으로 진행한다. 세 가지 가중치 시나리오와 표준화 전후 결과를 반드시 비교한다.

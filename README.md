@@ -60,4 +60,4 @@ API 키 없이 `data/sample/`의 교육용 데이터를 이용해 모든 화면�
 
 ## 학생 학습 방법
 
-모든 Course에는 상세 `lecture_note.md`, 단계별 과제, 확인 문제와 해설이 있습니다. Notebook은 완성 예제 → 따라하기 → 독립 연습 → 자가점검 순서로 구성했습니다. 전체 학습 경로와 오류 해결 방법은 `docs/student_learning_guide.md`를 참고하세요.
+모든 Course에는 Jupyter 형식의 `lecture_note.ipynb`, 단계별 과제, 확인 문제와 해설이 있습니다. 같은 내용의 `lecture_note.md`는 GitHub에서 빠르게 읽고 Notebook을 다시 생성하는 원본입니다. 전체 학습 경로와 오류 해결 방법은 `docs/student_learning_guide.md`를 참고하세요.
