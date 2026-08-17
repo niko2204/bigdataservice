@@ -36,7 +36,7 @@
 ## 구성
 
 - `SYLLABUS.md`: 10주 강의계획 및 평가
-- `lectures/`: 주차별 한국어 강의노트
+- [`lectures/`](lectures/README.md): 슬라이드의 개념·수식·논문 도판을 풀어 쓴 주차별 한국어 상세 강의노트
 - `slides/`: 용어·정의·수식·논문 도판·최신 동향을 포함한 Marp 강의 덱 10개
 - `notebooks/`: 학생이 실행하고 기록하는 Jupyter Notebook 10개
 - `assignments/`: 명확한 명세와 루브릭을 유지하면서 초보자용 단계·예시 코드를 제공하는
