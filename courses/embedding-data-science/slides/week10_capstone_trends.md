@@ -1,6 +1,6 @@
 ---
 marp: true
-theme: embedding-course
+theme: 임베딩-course
 paginate: true
 size: 16:9
 math: katex
@@ -15,7 +15,7 @@ title: "10주차 · 종합 프로젝트와 기술 동향"
 
 # 좋은 임베딩 실험을 좋은 데이터 서비스로
 
-**요구사항 → baseline → model → index → evaluation → deployment**
+**요구사항 → 기준선 → 모델 → 색인 → 평가 → 배포**
 
 ---
 
@@ -25,17 +25,17 @@ title: "10주차 · 종합 프로젝트와 기술 동향"
 > 최신 모델을 쓴 프로젝트보다 **의사결정의 근거가 추적되는 프로젝트**가 강하다.
 
 - 왜 이 표현을 선택했는가?
-- 어떤 baseline보다 얼마나 나아졌는가?
+- 어떤 기준선보다 얼마나 나아졌는가?
 - 어디서 실패하며 누구에게 피해가 가는가?
-- 같은 commit과 config로 재현되는가?
+- 같은 커밋과 설정으로 재현되는가?
 
 ---
 
 # 학습목표
 
-1. 데이터–표현–검색/분석–서비스를 end-to-end로 설계한다.
-2. 기능 요구사항을 측정 가능한 quality/cost/safety 지표로 바꾼다.
-3. baseline, ablation, error analysis가 포함된 실험계획을 작성한다.
+1. 데이터–표현–검색/분석–서비스를 전체 시스템으로 설계한다.
+2. 기능 요구사항을 측정 가능한 품질·비용·안전 지표로 바꾼다.
+3. 기준선, 요소 제거 실험, 오류 분석이 포함된 실험계획을 작성한다.
 4. 2013–2026 임베딩 기술 흐름을 문제 해결 방식의 변화로 설명한다.
 5. 최종 보고서·데모·구술평가에서 자신의 기술 선택을 방어한다.
 
@@ -48,9 +48,9 @@ title: "10주차 · 종합 프로젝트와 기술 동향"
 | 사용자 | 누가 언제 어떤 결정을 하는가? |
 | 입력 | 텍스트/이미지/문서의 언어·길이·권한은? |
 | 출력 | 순위, 분류, 군집, 답변 중 무엇인가? |
-| 정답 | relevance/label을 누가 어떻게 정의하는가? |
+| 정답 | 관련성/레이블을 누가 어떻게 정의하는가? |
 | 오류비용 | FP와 FN 중 무엇이 더 위험한가? |
-| 제약 | p95 latency, RAM, 비용, 라이선스, 개인정보 |
+| 제약 | p95 지연시간, RAM, 비용, 라이선스, 개인정보 |
 
 
 > **정의**
@@ -59,17 +59,17 @@ title: "10주차 · 종합 프로젝트와 기술 동향"
 
 ---
 
-# End-to-end 참조 구조
+# 종단 간 참조 구조
 
 
-**Source versioned** → **Parse & chunk** → **Embed & index** → **Retrieve & rerank** → **UI / API feedback**
+**출처 버전 관리** → **파싱·청크** → **임베딩·색인** → **검색·재순위화** → **UI/API 피드백**
 
 
 횡단 관심사:
 
-- evaluation dataset와 experiment tracking
-- access control, privacy, source attribution
-- monitoring, rollback, model/index versioning
+- 평가 데이터셋과 실험 추적
+- 접근 제어, 개인정보 보호, 출처 표시
+- 모니터링, 롤백, 모델/색인 버전 관리
 
 ---
 
@@ -78,8 +78,8 @@ title: "10주차 · 종합 프로젝트와 기술 동향"
 
 - **0** — 규칙/빈도/무작위
 - **1** — TF–IDF/BM25 + 고전 ML
-- **2** — off-the-shelf embedding
-- **3** — hybrid/rerank/fine-tune
+- **2** — 기성 임베딩 모델
+- **3** — 혼합/재순위화/미세 조정
 
 
 > **논문 읽기**
@@ -92,45 +92,45 @@ title: "10주차 · 종합 프로젝트와 기술 동향"
 
 | 기준 | 질문 | 후보 기록 |
 |---|---|---|
-| 과업 | retrieval/STS/classification? | training objective |
-| 언어·도메인 | 한국어·전문용어를 평가했나? | per-slice score |
-| 길이 | 실제 p95 tokens를 수용하나? | truncation rate |
-| 표현 | dense/sparse/multi-vector? | index 방식 |
-| 비용 | dim, params, throughput? | p95 latency/RAM |
-| 운영 | license, offline, revision? | model card |
+| 과업 | 검색/STS/분류? | 학습 목표 |
+| 언어·도메인 | 한국어·전문용어를 평가했나? | 부분집합별 점수 |
+| 길이 | 실제 p95 토큰을 수용하나? | 잘림 비율 |
+| 표현 | 밀집/희소/다중 벡터? | 색인 방식 |
+| 비용 | 차원, 매개변수 수, 처리량? | p95 지연시간/RAM |
+| 운영 | 라이선스, 오프라인 실행, 모델 버전? | 모델 카드 |
 
 ---
 
 # 데이터셋을 제품 요구사항에서 만든다
 
-1. 실제 사용자 질문 유형을 sampling한다.
+1. 실제 사용자 질문 유형을 표본 추출한다.
 2. 중복·개인정보·권한을 처리한다.
-3. relevance rubric과 annotator 교육을 만든다.
-4. 다중 정답과 graded relevance를 허용한다.
-5. 언어·길이·부정·숫자·최신성 slice를 태깅한다.
-6. 문서/시간 단위 split으로 누수를 막는다.
-7. test set을 잠그고 version을 부여한다.
+3. 관련성 채점 기준과 주석자 교육 자료를 만든다.
+4. 다중 정답과 등급형 관련성을 허용한다.
+5. 언어·길이·부정·숫자·최신성 부분집합을 태깅한다.
+6. 문서/시간 단위 분할로 누수를 막는다.
+7. 최종 평가 데이터를 잠그고 버전을 부여한다.
 
 
 > **주의**
-> 공개 benchmark를 재현하는 것과 제품을 평가하는 것은 별도 목표다. 둘을 함께 보고하면 transfer gap을 설명할 수 있다.
+> 공개 벤치마크를 재현하는 것과 제품을 평가하는 것은 별도 목표다. 둘을 함께 보고하면 전이 격차를 설명할 수 있다.
 
 
 ---
 
-# Ablation: 무엇이 실제로 기여했나
+# 요소 제거 실험: 무엇이 실제로 기여했나
 
 | 실험 | 바꾸는 것 | 고정할 것 |
 |---|---|---|
-| chunk | 128/256/512 | model/index/qrels |
-| representation | BM25/dense/hybrid | chunk/test queries |
-| dimension | 64/256/full | model/prompt/index family |
-| reranker | off/on | candidates top-k |
-| prompt | instruction A/B | evidence/model/decoding |
+| 청크 | 128/256/512 | 모델/색인/qrels |
+| 표현 방식 | BM25/밀집/혼합 | 청크/최종 평가 질의 |
+| 차원 | 64/256/전체 | 모델/프롬프트/색인 계열 |
+| 재순위화 모델 | 끔/켬 | 후보 상위 k개 |
+| 프롬프트 | 지시문 A/B | 근거/모델/디코딩 |
 
 
 > **정의**
-> **Ablation study**: 시스템 구성요소 하나를 제거·변경해 성능 변화로 그 기여를 추정하는 통제 실험.
+> **요소 제거 실험(ablation study)**: 시스템 구성요소 하나를 제거·변경해 성능 변화로 그 기여를 추정하는 통제 실험.
 
 
 ---
@@ -138,15 +138,15 @@ title: "10주차 · 종합 프로젝트와 기술 동향"
 # 오류 분석은 다음 실험을 만든다
 
 
-**실패 수집** → **원인 coding** → **빈도·피해** → **수정 가설** → **재평가**
+**실패 수집** → **원인 부호화** → **빈도·피해** → **수정 가설** → **재평가**
 
 
-권장 오류 taxonomy:
+권장 오류 분류체계:
 
-- OOV/고유명사, 부정·수치, truncation, 다국어
-- 불완전 label/qrels, ambiguous query
-- ANN miss, metadata filter, reranker reversal
-- 근거 누락, 인용 불일치, hallucination
+- OOV/고유명사, 부정·수치, 잘림, 다국어
+- 불완전 레이블/qrels, 모호한 질의
+- ANN 누락, 메타데이터 필터, 재순위화 모델의 순위 역전
+- 근거 누락, 인용 불일치, 근거 없는 생성(환각)
 
 ---
 
@@ -155,23 +155,23 @@ title: "10주차 · 종합 프로젝트와 기술 동향"
 ```text
 project/
 ├── README.md              # 실행·평가 순서
-├── configs/               # model/index/chunk/prompt
-├── data/README.md         # 출처·schema·split·license
+├── configs/               # 모델/색인/청크/prompt
+├── 데이터/README.md         # 출처·스키마·분할·라이선스
 ├── src/                   # 재사용 가능한 코드
 ├── notebooks/             # 탐색·오류 분석
-├── evaluation/            # qrels, metrics, frozen runs
-└── reports/               # 결과표, model/data card
+├── 평가/            # qrels, metrics, frozen runs
+└── reports/               # 결과표, 모델/데이터 카드
 ```
 
-기록: git commit, package lock, seed, model revision, hardware, 실행시간.
+기록: Git 커밋, 패키지 잠금 파일, 난수 시드, 모델 버전, 하드웨어, 실행시간.
 
 ---
 
 # 데이터 카드와 모델 카드
 
 
-- **Data card** — 출처·수집·동의·필터·언어·결측·split·known bias·허용 용도.
-- **Model/System card** — 학습목표·입출력·metric·slice·비용·한계·금지 용도·monitoring.
+- **데이터 카드(data card)** — 출처·수집·동의·필터·언어·결측·분할·알려진 편향·허용 용도.
+- **모델/시스템 카드** — 학습목표·입출력·지표·부분집합·비용·한계·금지 용도·모니터링.
 
 
 > **주의**
@@ -180,20 +180,20 @@ project/
 
 ---
 
-# 배포: model과 index는 한 버전 단위
+# 배포: 모델과 색인은 한 버전 단위
 
-벡터 공간이 달라지면 기존 index를 재사용할 수 없다.
+벡터 공간이 달라지면 기존 색인을 재사용할 수 없다.
 
 ```text
-embedding_model_revision + tokenizer + pooling + normalize
+embedding_model_revision + 토큰화기 + 풀링 + normalize
 + dimension + chunker_version + corpus_snapshot + index_config
 = index_version
 ```
 
-- blue/green index로 교체와 rollback
-- 신규 문서 incremental update와 삭제 전파
-- query 로그의 개인정보 최소화
-- 품질/지연/오류율 dashboard와 alert
+- 블루/그린 색인으로 교체와 롤백
+- 신규 문서의 증분 갱신과 삭제 전파
+- 질의 로그의 개인정보 최소화
+- 품질/지연/오류율 대시보드와 경보
 
 ---
 
@@ -201,15 +201,15 @@ embedding_model_revision + tokenizer + pooling + normalize
 
 | 구간 | p50/p95 | throughput | 비용 |
 |---|---:|---:|---:|
-| query encode | — | q/s | GPU/API |
+| 질의 인코딩 | — | q/s | GPU/API |
 | ANN retrieve | — | q/s | RAM/CPU |
-| rerank | — | pairs/s | GPU |
-| generation | — | tokens/s | GPU/API |
-| end-to-end | — | req/s | 전체 |
+| 재순위화 | — | pairs/s | GPU |
+| 생성 | — | 토큰/s | GPU/API |
+| 전체 시스템 | — | req/s | 전체 |
 
 
 > **최신 동향**
-> 성능 최적화 순서: 측정 → 병목 식별 → batch/cache/차원/index 조정 → 품질 회귀 테스트. 품질을 모른 채 latency만 줄이지 않는다.
+> 성능 최적화 순서: 측정 → 병목 식별 → 배치/cache/차원/색인 조정 → 품질 회귀 테스트. 품질을 모른 채 지연시간만 줄이지 않는다.
 
 
 ---
@@ -221,8 +221,8 @@ embedding_model_revision + tokenizer + pooling + normalize
 | 2013–2017 | Word2Vec, GloVe, fastText | 단어 분포를 정적 벡터로 |
 | 2017–2019 | Transformer, BERT, SBERT | 문맥화와 문장 단위 비교 |
 | 2020–2022 | DPR, ColBERT, RAG, CLIP, MRL | 검색·생성·멀티모달·가변 차원 |
-| 2023–2024 | MTEB, BGE-M3, ColPali | 통합 평가, hybrid/multi-vector, 시각 문서 |
-| 2025–2026 | Qwen3/Jina/Gemini 계열 | instruction, 다국어, omni-modal, 유연한 표현 |
+| 2023–2024 | MTEB, BGE-M3, ColPali | 통합 평가, 혼합/multi-vector, 시각 문서 |
+| 2025–2026 | Qwen3/Jina/Gemini 계열 | instruction, 다국어, 옴니모달, 유연한 표현 |
 
 
 > **논문 읽기**
@@ -234,25 +234,25 @@ embedding_model_revision + tokenizer + pooling + normalize
 # 최신 기술 동향 ① 통합
 
 
-- **Task integration** — embedding + reranking + generation을 instruction으로 통합.
-- **Representation integration** — dense + sparse + multi-vector를 한 backbone에서.
-- **Modality integration** — text + image + audio + video를 공동 공간에.
+- **과업 통합** — 임베딩 + 재순위화 + 생성을 지시문으로 통합.
+- **표현 통합** — 밀집 + 희소 + 다중 벡터를 하나의 기반 모델에서 처리.
+- **양식 통합** — 텍스트 + 이미지 + 오디오 + 비디오를 공동 공간에 배치.
 
 
 > **최신 동향**
-> 통합 모델은 운영 단순화를 약속하지만, 각 mode의 최적 prompt·adapter·index·metric을 여전히 따로 검증해야 한다.
+> 통합 모델은 운영 단순화를 약속하지만, 각 양식의 최적 프롬프트·어댑터·색인·지표를 여전히 따로 검증해야 한다.
 
 
 ---
 
-# 논문 도판: embedding과 reranking의 역할은 다르다
+# 논문 도판: 임베딩과 재순위화의 역할은 다르다
 
 ![w:1020](assets/papers/qwen3-embedding-figure1.webp)
 
-*그림: Qwen3-Embedding은 입력별 독립 벡터를, Qwen3-Reranker는 query–document를 함께 본 relevance score를 출력한다.*
+*그림: Qwen3-Embedding은 입력별 독립 벡터를 만들고, Qwen3-Reranker는 질의–문서를 함께 보고 관련성 점수를 출력한다.*
 
 > **교재 연결**
-> Chapter 8의 1차 검색과 reranking, Chapter 10의 embedding 학습을 한 시스템으로 묶되 **후보 recall과 재정렬 품질을 분리 평가**한다.
+> Chapter 8의 1차 검색과 재순위화, Chapter 10의 임베딩 학습을 한 시스템으로 묶되 **후보 재현율과 재정렬 품질을 분리 평가**한다.
 
 *출처: Zhang et al. (2025), “Qwen3 Embedding,” Figure 1 · [원 논문](https://arxiv.org/abs/2506.05176)*
 
@@ -260,12 +260,12 @@ embedding_model_revision + tokenizer + pooling + normalize
 
 # 최신 기술 동향 ② 효율
 
-- Matryoshka dimension truncation
-- product quantization, binary/int8 embedding
-- coarse-to-fine single→multi-vector retrieval
-- distillation과 작은 encoder의 경쟁력
-- synthetic query/negative로 데이터 효율 개선
-- long-document encoding과 adaptive chunking
+- Matryoshka 표현의 차원 축소
+- 곱 양자화, 이진/int8 임베딩
+- 거친 단계에서 정밀 단계로 이어지는 단일→다중 벡터 검색
+- 지식 증류와 작은 인코더의 경쟁력
+- 합성 질의·비관련 예시로 데이터 효율 개선
+- 장문 인코딩과 적응형 문서 분할
 
 
 *출처: [Matryoshka Representation Learning](https://arxiv.org/abs/2205.13147) · [BGE-M3](https://arxiv.org/abs/2402.03216) · [Qwen3 Embedding](https://arxiv.org/abs/2506.05176)*
@@ -277,15 +277,15 @@ embedding_model_revision + tokenizer + pooling + normalize
 
 MTEB → MMTEB의 흐름은 “평균 점수”가 아니라 평가 범위를 확장한다.
 
-- 더 많은 언어와 script
-- retrieval 이외의 embedding 과업
-- instruction/prompt의 공정한 처리
+- 더 많은 언어와 문자 체계
+- 검색 이외의 임베딩 과업
+- 지시문·프롬프트의 공정한 처리
 - 모델 크기·공개성·비용 비교
-- contamination과 데이터 품질 점검
+- 평가 데이터 오염과 데이터 품질 점검
 
 
 > **주의**
-> 2026 preprint의 주장과 leaderboard 순위는 변할 수 있다. 학기 시작일에 버전·날짜를 표시하고 자체 frozen test를 우선한다.
+> 2026년 사전 공개 논문의 주장과 순위표 순위는 변할 수 있다. 학기 시작일에 버전·날짜를 표시하고 자체 고정 최종 평가 데이터를 우선한다.
 
 
 ---
@@ -295,11 +295,11 @@ MTEB → MMTEB의 흐름은 “평균 점수”가 아니라 평가 범위를 �
 배포 전 “예/아니오”로 확인:
 
 - 데이터 수집·재사용·모델 라이선스가 허용되는가?
-- 개인/민감 정보가 embedding, log, cache에 남는가?
+- 개인/민감 정보가 임베딩, 로그, 캐시에 남는가?
 - 사용자 권한이 검색 전에 강제되는가?
 - 집단별 오류와 가장 큰 피해를 측정했는가?
 - 근거와 모델 한계를 UI에서 고지하는가?
-- 삭제·정정·이의제기·rollback 경로가 있는가?
+- 삭제·정정·이의제기·롤백 경로가 있는가?
 
 ---
 
@@ -315,15 +315,15 @@ MTEB → MMTEB의 흐름은 “평균 점수”가 아니라 평가 범위를 �
 
 | 프로젝트 단계 | Hands-On LLM | 질문 |
 |---|---|---|
-| 표현 이해 | Ch.2–3 | 토큰/hidden state/pooling은 무엇인가? |
+| 표현 이해 | Ch.2–3 | 토큰/은닉 상태/풀링은 무엇인가? |
 | 분석 | Ch.4–5 | 분류·군집 결과를 어떻게 검증하나? |
-| 검색·RAG | Ch.8 | chunk–index–rerank 중 병목은? |
-| 멀티모달 | Ch.9 | OCR/text와 image representation 중 무엇을 보존? |
-| 파인튜닝 | Ch.10 | data–loss–evaluator가 같은 relevance를 정의하나? |
+| 검색·RAG | Ch.8 | 청크–색인–재순위화 중 병목은? |
+| 멀티모달 | Ch.9 | OCR/텍스트와 이미지 representation 중 무엇을 보존? |
+| 미세 조정 | Ch.10 | 데이터–손실함수–평가기가 같은 관련성을 정의하나? |
 
 
 > **교재 연결**
-> **원칙:** 책 코드를 그대로 실행한 화면은 산출물이 아니다. 우리 데이터, baseline, metric, failure case를 추가해야 한다.
+> **원칙:** 책 코드를 그대로 실행한 화면은 산출물이 아니다. 우리 데이터, 기준선, 지표, failure case를 추가해야 한다.
 
 
 ---
@@ -333,27 +333,27 @@ MTEB → MMTEB의 흐름은 “평균 점수”가 아니라 평가 범위를 �
 # 최종 프로젝트 필수 산출물
 
 1. 문제정의서와 사용자 시나리오
-2. data card와 frozen evaluation set
-3. 실행 가능한 코드/Notebook/config
-4. baseline 1개와 embedding 방법 1개의 비교표
-5. dev에서 수행한 개선 실험 1개
+2. 데이터 카드와 고정 평가 세트
+3. 실행 가능한 코드/Notebook/설정
+4. 기준선 1개와 임베딩 방법 1개의 비교표
+5. 개발에서 수행한 개선 실험 1개
 6. 서로 다른 실패 사례 5개와 원인 분석
-7. test 품질 지표와 질의·예제별 결과
+7. 최종 평가 품질 지표와 질의·예제별 결과
 8. 안전·라이선스·개인정보 검토
 9. 10분 발표·시연과 5분 질의응답
 
-> **선택 확장:** 두 번째 embedding 모델, 복수 ablation, 신뢰구간, latency·memory·비용 분석은 가산점 없는 심화 활동이다.
+> **선택 확장:** 두 번째 임베딩 모델, 복수 요소 제거 실험, 신뢰구간, 지연시간·메모리 사용량·비용 분석은 가산점 없는 심화 활동이다.
 
 ---
 
 # 구술평가 질문 은행
 
 - 왜 cosine이며 inner product/L2가 아닌가?
-- normalize를 제거하면 rank가 어떻게 바뀌는가?
-- test leakage를 어떤 split으로 막았는가?
-- BM25가 이긴 query의 공통점은?
+- normalize를 제거하면 순위가 어떻게 바뀌는가?
+- 최종 평가 누수를 어떤 분할로 막았는가?
+- BM25가 이긴 질의의 공통점은?
 - 가장 큰 실패 유형과 피해는?
-- index 파라미터를 바꾸면 model score와 어떻게 분리해 평가하는가?
+- 색인 파라미터를 바꾸면 모델 점수와 어떻게 분리해 평가하는가?
 - 새 문서/삭제/권한 변경은 어떻게 반영되는가?
 - 예산이 절반이면 무엇을 줄이고 무엇을 지킬 것인가?
 
@@ -364,9 +364,9 @@ MTEB → MMTEB의 흐름은 “평균 점수”가 아니라 평가 범위를 �
 | 시간 | 내용 |
 |---:|---|
 | 0:00–1:00 | 사용자, 입력, 출력과 위험한 오류 |
-| 1:00–3:00 | 데이터, 정답, split과 baseline |
-| 3:00–5:00 | embedding 방법과 선택 근거 |
-| 5:00–7:00 | test 결과와 개선 실험 1개 |
+| 1:00–3:00 | 데이터, 정답, 분할과 기준선 |
+| 3:00–5:00 | 임베딩 방법과 선택 근거 |
+| 5:00–7:00 | 최종 평가 결과와 개선 실험 1개 |
 | 7:00–8:00 | 실패 사례와 한계 |
 | 8:00–10:00 | 새 입력 시연과 다음 단계 |
 
@@ -381,9 +381,9 @@ MTEB → MMTEB의 흐름은 “평균 점수”가 아니라 평가 범위를 �
 
 | 재현 | 증거 |
 |---|---|
-| 빈 환경에서 처음부터 실행 | baseline을 같은 조건으로 비교 |
-| seed·revision·config 고정 | test를 tuning에 사용하지 않음 |
-| data 경로와 license 기록 | 오류 원문과 문서 ID 보존 |
+| 빈 환경에서 처음부터 실행 | 기준선을 같은 조건으로 비교 |
+| 난수 시드·모델 버전·설정 고정 | 최종 평가를 tuning에 사용하지 않음 |
+| 데이터 경로와 라이선스 기록 | 오류 원문과 문서 ID 보존 |
 | 결과표 자동 생성 | 품질·비용·안전을 함께 보고 |
 
 
@@ -396,11 +396,11 @@ MTEB → MMTEB의 흐름은 “평균 점수”가 아니라 평가 범위를 �
 # 과정 전체 핵심 정리
 
 1. 임베딩은 과업에 필요한 관계를 공간에 보존하는 함수다.
-2. 토큰화·pooling·정규화가 결과를 바꾼다.
+2. 토큰화·풀링·정규화가 결과를 바꾼다.
 3. 학습목표의 positive/negative가 “가까움”을 정의한다.
 4. 분석 그림은 원공간 지표와 오류 사례로 검증한다.
-5. 검색은 chunk–representation–index–rerank의 시스템이다.
-6. 최신 모델도 baseline·자체 데이터·비용 평가를 대체하지 않는다.
+5. 검색은 청크–representation–색인–재순위화의 시스템이다.
+6. 최신 모델도 기준선·자체 데이터·비용 평가를 대체하지 않는다.
 
 > **핵심**
 > **좋은 임베딩**이란 우리의 의사결정을 더 정확하고 책임 있게 만드는 표현이다.
