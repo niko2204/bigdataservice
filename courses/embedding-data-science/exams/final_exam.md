@@ -49,8 +49,8 @@ silhouette score가 높은 군집이 사용자에게 유용한 topic이라는 �
 
 $$[2,0,1,0,2]$$
 
-전체 corpus에서 relevance가 1 이상인 문서는 4개다. binary 지표에서는 `rel >= 1`을 관련
-문서로 본다.
+전체 corpus에서 relevance가 1 이상인 문서는 4개다. 위 순위에 나타나지 않은 나머지 관련
+문서 1개의 relevance는 1이다. binary 지표에서는 `rel >= 1`을 관련 문서로 본다.
 
 ### 2.1 계산 — 12점
 
