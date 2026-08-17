@@ -7,7 +7,7 @@
         ## 학습목표
 
         - 토큰 벡터를 평균내는 것과 문장 임베딩 모델은 무엇이 다른가?
-- Bi-encoder와 Cross-encoder는 정확도와 속도에서 어떤 차이가 있는가?
+- Bi-인코더와 Cross-인코더는 정확도와 속도에서 어떤 차이가 있는가?
 - 대조학습은 유사한 문장을 어떻게 가까이 배치하는가?
 
         ## 핵심 개념
@@ -20,7 +20,7 @@
 
         ## 수학적 초점
 
-        Pooling, cosine similarity, contrastive learning, temperature
+        Pooling, cosine 유사도, contrastive learning, temperature
 
         수식은 계산 자체보다 각 기호가 데이터와 어떤 관계를 나타내는지 설명하는 데 사용한다.
         학생은 작은 예제를 손으로 계산한 뒤 Notebook 출력과 비교하고, 값이 달라진 경우

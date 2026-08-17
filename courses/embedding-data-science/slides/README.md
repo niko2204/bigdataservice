@@ -46,8 +46,8 @@ Marp 이미지 크기 문법으로 작성했습니다. 대표 논문 도판은 �
 | `week01_embedding_foundations.md` | 표현, 벡터 공간, 거리와 유사도 |
 | `week02_tokenization_sparse.md` | 토큰화, TF–IDF, BM25, 희소·혼합 검색 |
 | `week03_word_embeddings.md` | Word2Vec, GloVe, fastText |
-| `week04_contextual_transformer.md` | 문맥 임베딩, self-attention, Transformer |
-| `week05_sentence_embeddings.md` | SBERT, 대조학습, 파인튜닝 |
+| `week04_contextual_transformer.md` | 문맥 임베딩, 자기 어텐션, Transformer |
+| `week05_sentence_embeddings.md` | SBERT, 대조학습, 미세 조정 |
 | `week06_embedding_analytics.md` | 분류, 군집, 토픽 모델링, 시각화 |
 | `week07_evaluation.md` | STS·검색 지표, MTEB/MMTEB, 시스템 평가 |
 | `week08_vector_search_rag.md` | ANN, 재순위화, RAG, ColBERT |

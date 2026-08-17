@@ -1,6 +1,6 @@
 ---
 marp: true
-theme: embedding-course
+theme: 임베딩-course
 paginate: true
 size: 16:9
 math: katex
@@ -15,7 +15,7 @@ title: "03주차 · 단어 임베딩"
 
 # 단어의 의미를 분포에서 학습하기
 
-**공기행렬 → PMI/SVD → Word2Vec → GloVe → fastText**
+**단어 동시 출현 행렬 → PMI/SVD → Word2Vec → GloVe → fastText**
 
 ---
 
@@ -25,7 +25,7 @@ title: "03주차 · 단어 임베딩"
 
 
 - **관측** — “학생이 ___을 신청했다”의 빈칸에 장학금·수강·기숙사가 반복된다.
-- **학습** — 주변 단어를 예측하거나 공기 통계를 압축해 가까운 벡터를 만든다.
+- **학습** — 주변 단어를 예측하거나 동시 출현 통계를 압축해 가까운 벡터를 만든다.
 
 
 > **주의**
@@ -36,19 +36,19 @@ title: "03주차 · 단어 임베딩"
 
 # 학습목표
 
-1. window, co-occurrence, PMI/PPMI, SVD를 설명한다.
+1. 문맥 창, co-occurrence, PMI/PPMI, SVD를 설명한다.
 2. CBOW와 Skip-gram의 입력·목표를 비교한다.
-3. negative sampling이 full softmax 비용을 줄이는 원리를 설명한다.
+3. 비관련 표본 추출이 전체 소프트맥스 비용을 줄이는 원리를 설명한다.
 4. Word2Vec, GloVe, fastText의 학습 신호와 오류를 비교한다.
 5. Hands-On LLM의 Gensim/추천 예제를 평가 가능한 실험으로 확장한다.
 
 ---
 
-# 공기행렬(co-occurrence matrix)
+# 단어 동시 출현 행렬(co-occurrence matrix)
 
 중심 단어 $w$ 주변 $c$칸 안에 문맥 단어 $u$가 몇 번 등장했는지 센다.
 
-$$C_{w,u}=\#\{u\text{ appears within window of }w\}$$
+$$C_{w,u}=\#\{u\text{ appears within the context window of }w\}$$
 
 | 중심＼문맥 | 학생 | 신청 | 장학금 | 교수 |
 |---|---:|---:|---:|---:|
@@ -56,8 +56,8 @@ $$C_{w,u}=\#\{u\text{ appears within window of }w\}$$
 | 장학금 | 10 | 16 | 25 | 1 |
 | 연구 | 5 | 3 | 1 | 19 |
 
-- 작은 window: 문법·기능 유사성
-- 큰 window: 주제·관련성
+- 작은 문맥 창: 문법·기능 유사성
+- 큰 문맥 창: 주제·관련성
 - 좌우 문맥을 구분할 수도 있다.
 
 ---
@@ -112,22 +112,22 @@ $$X\approx U_k\Sigma_kV_k^\top$$
 
 $$\max_\theta\sum_t\sum_{-c\le j\le c, j\ne0}\log P(w_{t+j}\mid w_t)$$
 
-full softmax:
+전체 소프트맥스:
 
 $$P(o\mid i)=\frac{\exp({\mathbf v'_o}^{\top}\mathbf v_i)}{\sum_{w\in V}\exp({\mathbf v'_w}^{\top}\mathbf v_i)}$$
 
-어휘 $|V|$가 크면 분모 계산이 비싸다. 그래서 hierarchical softmax 또는 negative sampling을 사용한다.
+어휘 $|V|$가 크면 분모 계산이 비싸다. 그래서 hierarchical 소프트맥스 또는 비관련 표본 추출을 사용한다.
 
 ---
 
-# Negative sampling
+# 비관련 표본 추출(negative sampling)
 
-관측된 양성 쌍 $(w,c)$는 가깝게, 잡음 분포에서 뽑은 $k$개 음성 $n_i$는 멀게:
+관측된 관련 쌍 $(w,c)$는 가깝게, 잡음 분포에서 뽑은 $k$개 비관련 표본 $n_i$는 멀게:
 
 $$\log\sigma(\mathbf v_c'^\top\mathbf v_w)+\sum_{i=1}^{k}\log\sigma(-\mathbf v_{n_i}'^\top\mathbf v_w)$$
 
 - 전체 어휘 분모 대신 선택된 몇 개 쌍만 갱신한다.
-- 음성 분포와 $k$가 학습 결과에 영향을 준다.
+- 비관련 표본 분포와 $k$가 학습 결과에 영향을 준다.
 - 자주 등장하는 단어를 subsampling해 계산량과 편향을 줄인다.
 
 
@@ -150,11 +150,11 @@ $$\log\sigma(\mathbf v_c'^\top\mathbf v_w)+\sum_{i=1}^{k}\log\sigma(-\mathbf v_{
 
 ---
 
-# GloVe: 전역 공기 통계를 회귀한다
+# GloVe: 전역 동시 출현 통계를 회귀한다
 
 $$J=\sum_{i,j}f(X_{ij})\left(\mathbf w_i^\top\tilde{\mathbf w}_j+b_i+\tilde b_j-\log X_{ij}\right)^2$$
 
-- $X_{ij}$: 전체 말뭉치에서 단어 $i,j$의 공기 횟수
+- $X_{ij}$: 전체 말뭉치에서 단어 $i,j$의 동시 출현 횟수
 - $f$: 지나치게 희귀/빈번한 쌍의 영향 제어
 - Word2Vec의 국소 예측과 달리 **전역 행렬 통계**를 명시적으로 사용
 
@@ -180,7 +180,7 @@ $$\mathbf v_{word}=\sum_{g\in\mathcal G(word)}\mathbf z_g$$
 
 
 > **논문 읽기**
-> 한국어에서 형태·문자 정보의 이점은 corpus와 tokenizer에 따라 다르므로 intrinsic + downstream 평가가 필요하다.
+> 한국어에서 형태·문자 정보의 이점은 말뭉치와 토큰화기에 따라 다르므로 intrinsic + downstream 평가가 필요하다.
 
 
 ---
@@ -214,7 +214,7 @@ $$\mathbf v(king)-\mathbf v(man)+\mathbf v(woman)\approx\mathbf v(queen)$$
 
 
 > **주의**
-> **평가 원칙:** 전체 평균뿐 아니라 집단별 false positive/negative, 사용 맥락, 피해의 비대칭을 기록한다.
+> **평가 원칙:** 전체 평균뿐 아니라 집단별 잘못된 관련 판정/negative, 사용 맥락, 피해의 비대칭을 기록한다.
 
 
 ---
@@ -270,7 +270,7 @@ def mean_embed(tokens, kv):
 
 
 > **실습**
-> **개선:** TF–IDF 가중 평균, SIF, 문장 Transformer와 비교하고 동일 test query로 평가한다.
+> **개선:** TF–IDF 가중 평균, SIF, 문장 Transformer와 비교하고 동일 최종 평가 질의로 평가한다.
 
 
 ---
@@ -279,9 +279,9 @@ def mean_embed(tokens, kv):
 
 | 단계 | 데모 | 평가 가능한 실험 |
 |---|---|---|
-| 데이터 | 노래 몇 곡 | train/test와 메타데이터 명시 |
+| 데이터 | 노래 몇 곡 | 학습/최종 평가와 메타데이터 명시 |
 | 표현 | 평균 벡터 | TF–IDF, Word2Vec, SBERT 비교 |
-| 결과 | 이웃 5개 관찰 | 정답/선호 라벨로 Recall@k |
+| 결과 | 이웃 5개 관찰 | 정답/선호 라벨로 재현율@k |
 | 해석 | “비슷하다” | 장르·아티스트 편향, 다양성 분석 |
 
 
@@ -297,7 +297,7 @@ def mean_embed(tokens, kv):
 
 - CPU/edge 환경, 매우 낮은 지연시간, 작은 메모리
 - 토큰 수준 특성을 해석해야 하는 고전 ML 파이프라인
-- 작은 도메인 corpus에 빠르게 적응하는 기준선
+- 작은 도메인 말뭉치에 빠르게 적응하는 기준선
 - 형태 정보가 중요한 희귀어 처리
 
 
@@ -307,16 +307,16 @@ def mean_embed(tokens, kv):
 
 ---
 
-# 수업 활동: window가 의미를 바꾼다
+# 수업 활동: 문맥 창가 의미를 바꾼다
 
-1. 같은 corpus로 `window=2`와 `window=10` 모델을 학습한다.
+1. 같은 말뭉치로 `window=2`와 `window=10` 모델을 학습한다.
 2. 구문적 단어 5개, 주제적 단어 5개의 이웃을 저장한다.
-3. 두 모델의 이웃 overlap@10을 계산한다.
+3. 두 모델의 이웃 겹침률@10을 계산한다.
 4. downstream 문서 분류/검색 중 하나로 성능을 비교한다.
 
 
 > **실습**
-> **결론 형식:** “큰 window는 ___ 관계를 강화했고, 이 변화가 ___ 과업에서 지표를 ___만큼 변화시켰다.”
+> **결론 형식:** “큰 문맥 창는 ___ 관계를 강화했고, 이 변화가 ___ 과업에서 지표를 ___만큼 변화시켰다.”
 
 
 ---
@@ -326,12 +326,12 @@ def mean_embed(tokens, kv):
 1. 분포 가설을 자신의 예로 설명하라.
 2. PMI가 단순 빈도보다 공통어 영향을 줄이는 원리는?
 3. CBOW와 Skip-gram의 입력/정답은?
-4. negative sampling에서 false negative가 생기면 어떤 방향으로 학습되는가?
+4. 비관련 표본 추출에서 잘못된 비관련 판정가 생기면 어떤 방향으로 학습되는가?
 5. 평균 단어 벡터 문서 표현의 구조적 한계 두 가지는?
 
 
 > **교재 연결**
-> **Notebook:** `../notebooks/week03.ipynb` · seed, corpus, 파라미터, OOV 비율을 함께 기록한다.
+> **Notebook:** `../notebooks/week03.ipynb` · 난수 시드, 말뭉치, 파라미터, OOV 비율을 함께 기록한다.
 
 
 ---
@@ -339,8 +339,8 @@ def mean_embed(tokens, kv):
 # 핵심 정리
 
 - 단어 임베딩은 주변 분포를 저차원 기하에 압축한다.
-- 공기행렬/PPMI/SVD와 Word2Vec/GloVe는 서로 다른 계산으로 같은 큰 질문을 푼다.
-- fastText는 subword 합으로 희귀어와 형태 변이를 다룬다.
+- 단어 동시 출현 행렬/PPMI/SVD와 Word2Vec/GloVe는 서로 다른 계산으로 같은 큰 질문을 푼다.
+- fastText는 부분 단어 합으로 희귀어와 형태 변이를 다룬다.
 - 정적 벡터는 빠르고 유용하지만 다의성·어순·부정·편향에 구조적 한계가 있다.
 - 하이퍼파라미터가 “의미”의 종류를 바꾸므로 downstream 평가가 필수다.
 

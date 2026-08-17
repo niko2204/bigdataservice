@@ -46,6 +46,7 @@
 - `ASSESSMENT_RUBRIC.md`: 공통 채점 루브릭
 - `data/policy_documents.csv`: 작은 한국어 예제 데이터
 - `SOURCE_AND_LICENSE.md`: 원본, 기준 커밋, 변경 및 라이선스 기록
+- `TERMINOLOGY.md`: 수학·NLP·검색·평가 용어의 한국어 표기 기준
 
 ## 주차별 바로가기
 
@@ -75,7 +76,7 @@ jupyter lab courses/embedding-data-science/notebooks
 
 각 Notebook은 기본 실습이 API 키 없이 실행되도록 작성했습니다. Transformer와 CLIP 모델
 실습은 인터넷과 모델 다운로드가 필요한 선택 셀입니다. Sentence Transformers 셀도 주차별
-연습에서는 선택할 수 있지만, 과제 1·2의 dense 검색에서는 필수입니다. 모델 다운로드가
+연습에서는 선택할 수 있지만, 과제 1·2의 밀집 임베딩 검색에서는 필수입니다. 모델 다운로드가
 어려우면 교수자가 제공한 저장 임베딩을 사용합니다. 모델 셀은 `RUN_*` 값을 `True`로 바꾸어
 실행합니다.
 
@@ -85,7 +86,7 @@ jupyter lab courses/embedding-data-science/notebooks
 |---|---|---|
 |공통 과제 안내|[제출 구조·협업·AI·재현성 규칙](assignments/README.md)|명세 준수와 독립 검증|
 |과제 1|[희소/밀집 검색의 통제 비교](assignments/assignment01.md)|qrels, 검색 지표, 오류 분석|
-|과제 2|[벡터 검색과 근거 기반 응답](assignments/assignment02.md)|chunk 실험, 검색/생성 오류, 거부|
+|과제 2|[벡터 검색과 근거 기반 응답](assignments/assignment02.md)|청크 실험, 검색/생성 오류, 응답 보류|
 |최종 프로젝트|[임베딩 데이터 서비스](assignments/final_project.md)|기준선, 개선 실험, 서비스 방어|
 |중간고사|[학생용 문제지](exams/midterm_exam.md)|1–5주차 정의·수식·비교|
 |기말고사|[학생용 문제지](exams/final_exam.md)|6–10주차 평가·RAG·멀티모달·재현성|
@@ -94,7 +95,7 @@ jupyter lab courses/embedding-data-science/notebooks
 전용 저장소로 옮기거나 수치와 사례를 변형해야 합니다.
 
 과제 1은 문서 50개·질의 10개, 과제 2는 원문 10개·질문 12개를 최소 범위로 한다. 과제에서
-nDCG 구현, 다중 청크 조합, 복수 ablation과 성능 신뢰구간은 선택 확장 활동이며 필수 채점
+nDCG 구현, 다중 청크 조합, 복수 요소 제거 실험과 성능 신뢰구간은 선택 확장 활동이며 필수 채점
 범위가 아니다. 단, nDCG의 정의와 작은 손계산은 7주차 수업과 기말고사 이론 범위에 포함된다.
 
 ## 교육 원칙

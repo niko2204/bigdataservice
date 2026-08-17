@@ -1,6 +1,6 @@
 ---
 marp: true
-theme: embedding-course
+theme: 임베딩-course
 paginate: true
 size: 16:9
 math: katex
@@ -15,7 +15,7 @@ title: "08주차 · 벡터 검색과 RAG"
 
 # 벡터에서 근거까지: 검색과 RAG 시스템
 
-**chunk → embed → index → retrieve → rerank → generate → evaluate**
+**청크 → 임베딩 → 색인 → 검색 → 재순위화 → 생성 → 평가**
 
 ---
 
@@ -25,19 +25,19 @@ title: "08주차 · 벡터 검색과 RAG"
 > 생성 모델이 답을 잘 쓰려면 먼저 **정답 근거가 검색 가능한 단위로 존재**해야 한다.
 
 - 문서가 없으면 검색할 수 없다.
-- 잘못 chunk하면 정답과 조건이 분리된다.
-- top-k에 근거가 없으면 prompt 개선으로 복구하기 어렵다.
+- 잘못 청크하면 정답과 조건이 분리된다.
+- 상위 k개에 근거가 없으면 프롬프트 개선으로 복구하기 어렵다.
 - 검색 성공과 근거 기반 답변 성공은 별도로 평가한다.
 
 ---
 
 # 학습목표
 
-1. exact k-NN과 ANN의 정확도–속도 trade-off를 설명한다.
+1. 정확 k-NN과 ANN의 정확도–속도 상충 관계를 설명한다.
 2. HNSW, IVF, PQ의 핵심 아이디어를 구분한다.
-3. chunking, metadata, sparse+dense hybrid, reranker를 설계한다.
+3. 문서 분할, 메타데이터, 희소·밀집 혼합, 재순위화 모델을 설계한다.
 4. DPR/ColBERT/RAG의 표현과 정보 흐름을 비교한다.
-5. Hands-On LLM 8장의 FAISS–reranking–RAG 코드를 실패 단계별로 평가한다.
+5. Hands-On LLM 8장의 FAISS–재순위화–RAG 코드를 실패 단계별로 평가한다.
 
 ---
 
@@ -49,23 +49,23 @@ title: "08주차 · 벡터 검색과 RAG"
 
 
 > **정의**
-> **인덱스(index)**: 쿼리마다 모든 벡터를 순차 비교하지 않고 후보를 빠르게 찾도록 만든 자료구조.
+> **색인(index)**: 질의마다 모든 벡터를 순차 비교하지 않고 후보를 빠르게 찾도록 만든 자료구조.
 
 
 ---
 
 # Exact k-NN vs Approximate NN
 
-| | Exact search | ANN search |
+| | 정확 탐색 | ANN 탐색 |
 |---|---|---|
-| 결과 | 정의한 metric의 정확한 top-k | 높은 확률로 top-k 근사 |
-| 비용 | 보통 corpus 크기에 선형 | sublinear에 가까운 후보 탐색 |
-| 용도 | 작은 corpus, gold 기준 | 대규모 실서비스 |
-| 평가 | task metric | task metric + ANN recall + latency |
+| 결과 | 정의한 지표의 정확한 상위 k개 | 높은 확률로 상위 k개 근사 |
+| 비용 | 보통 말뭉치 크기에 선형 | 준선형보다 낮은 수준의 후보 탐색 |
+| 용도 | 작은 말뭉치, 정답 기준 | 대규모 실서비스 |
+| 평가 | 과업 지표 | 과업 지표 + ANN 재현율 + 지연시간 |
 
 
 > **주의**
-> ANN이 반환한 결과가 틀린 이유는 (a) embedding 순위 자체가 나쁨, (b) index가 exact 이웃을 놓침으로 분해해야 한다.
+> ANN이 반환한 결과가 틀린 이유는 (a) 임베딩 순위 자체가 나쁨, (b) 색인이 정확 탐색의 이웃을 놓침으로 분해해야 한다.
 
 
 ---
@@ -79,13 +79,13 @@ title: "08주차 · 벡터 검색과 RAG"
 
 핵심 파라미터:
 
-- `M`: 노드 연결 수 — 메모리/구축시간/recall
+- `M`: 노드 연결 수 — 메모리/구축시간/재현율
 - `efConstruction`: 구축 탐색 폭
-- `efSearch`: 쿼리 탐색 폭 — latency/recall
+- `efSearch`: 쿼리 탐색 폭 — 지연시간/재현율
 
 
 > **논문 읽기**
-> `efSearch`를 늘리면 보통 recall이 오르고 느려진다. 모델 교체 전 index 파라미터 Pareto 곡선을 그린다.
+> `efSearch`를 늘리면 보통 재현율이 오르고 느려진다. 모델 교체 전 색인 파라미터 Pareto 곡선을 그린다.
 
 
 *출처: Malkov & Yashunin (2018), [“Efficient and Robust Approximate Nearest Neighbor Search Using HNSW Graphs”](https://arxiv.org/abs/1603.09320)*
@@ -96,12 +96,12 @@ title: "08주차 · 벡터 검색과 RAG"
 # IVF와 Product Quantization
 
 
-- **IVF** — 벡터를 coarse centroid 목록에 나누고 쿼리와 가까운 `nprobe` 목록만 검색.
-- **PQ** — 벡터를 여러 subspace로 나눠 각 부분을 짧은 code로 양자화해 메모리·거리 계산 절약.
+- **IVF** — 벡터를 거친 군집 중심 목록으로 나누고 질의와 가까운 `nprobe`개 목록만 검색.
+- **PQ** — 벡터를 여러 부분 공간으로 나눠 각 부분을 짧은 코드로 양자화해 메모리와 거리 계산을 절약.
 
 
-- IVF: `nlist`, `nprobe`가 recall–latency를 결정
-- PQ: code size가 압축률–거리 왜곡을 결정
+- IVF: `nlist`, `nprobe`가 재현율–지연시간을 결정
+- PQ: 코드 크기가 압축률–거리 왜곡을 결정
 - 조합 예: `IndexIVFPQ`
 
 
@@ -110,7 +110,7 @@ title: "08주차 · 벡터 검색과 RAG"
 
 ---
 
-# Chunking은 검색의 단위 설계
+# 문서 분할은 검색의 단위 설계
 
 
 - **고정 길이** — 단순·빠름. 문장/표 경계를 자를 수 있음.
@@ -118,41 +118,41 @@ title: "08주차 · 벡터 검색과 RAG"
 - **의미 기반** — 문장 간 변화로 분할. 비용·불안정성 증가.
 
 
-**overlap**은 경계 손실을 완화하지만 중복 후보·저장비용·근거 중복을 늘린다.
+**겹침률**은 경계 손실을 완화하지만 중복 후보·저장비용·근거 중복을 늘린다.
 
 
 > **실습**
-> **평가:** chunk size 128/256/512 tokens에 대해 answer-containing recall과 전체 latency를 비교한다.
+> **평가:** 청크 크기 128/256/512 토큰에 대해 정답 포함 재현율과 전체 지연시간을 비교한다.
 
 
 ---
 
-# 좋은 chunk의 조건
+# 좋은 청크의 조건
 
 - 독립적으로 읽어도 주어·조건·날짜가 이해된다.
-- 제목/문서명/시행일 같은 metadata와 연결된다.
-- 정답 근거가 하나 또는 소수 chunk에 완결된다.
+- 제목/문서명/시행일 같은 메타데이터와 연결된다.
+- 정답 근거가 하나 또는 소수 청크에 완결된다.
 - 인용할 때 원문 위치로 되돌아갈 수 있다.
-- 변경된 문서만 재임베딩할 stable ID가 있다.
+- 변경된 문서만 다시 임베딩할 수 있도록 안정적인 ID가 있다.
 
 
 > **주의**
-> 표의 한 행만 텍스트로 떼면 열 제목·단위가 사라진다. PDF/표 문서는 layout-aware chunking 또는 페이지 이미지 검색을 고려한다.
+> 표의 한 행만 텍스트로 떼면 열 제목·단위가 사라진다. PDF/표 문서는 레이아웃 인식 문서 분할 또는 페이지 이미지 검색을 고려한다.
 
 
 ---
 
-# Dense retrieval: DPR의 이중 인코더
+# 밀집 검색: DPR의 이중 인코더
 
 $$s(q,p)=E_Q(q)^\top E_P(p)$$
 
 
-**질문 $q$** → **Query Encoder** → **$z_q$** → **$z_p$ corpus index**
+**질문 $q$** → **질의 인코더** → **$z_q$** → **$z_p$ 말뭉치 색인**
 
 
-- passage vector는 사전 계산
-- positive passage와 in-batch/hard negatives로 학습
-- lexical mismatch에 강하지만 정확한 이름·수치·부정은 놓칠 수 있음
+- 문서 구절 벡터는 미리 계산
+- 관련 문서 구절과 배치 내·혼동 비관련 예시로 학습
+- 어휘 불일치에 강하지만 정확한 이름·수치·부정은 놓칠 수 있음
 
 
 *출처: Karpukhin et al. (2020), [“Dense Passage Retrieval”](https://arxiv.org/abs/2004.04906)*
@@ -160,36 +160,36 @@ $$s(q,p)=E_Q(q)^\top E_P(p)$$
 
 ---
 
-# ColBERT: late interaction
+# ColBERT: 후기 상호작용
 
 쿼리 토큰 벡터 $Q_i$, 문서 토큰 벡터 $D_j$:
 
 $$s(q,d)=\sum_i\max_j Q_i^\top D_j$$
 
 
-- **Bi-encoder** — 문서 1벡터, 가장 빠른 압축
+- **이중 인코더** — 문서 1벡터, 가장 빠른 압축
 - **ColBERT** — 토큰별 벡터를 사전 계산, MaxSim
-- **Cross-encoder** — 모든 토큰을 함께 계산, 가장 비쌈
+- **교차 인코더** — 모든 토큰을 함께 계산, 가장 비쌈
 
 
-*출처: Khattab & Zaharia (2020), [“ColBERT”](https://arxiv.org/abs/2004.12832) · 논문은 풍부한 interaction을 유지하며 cross-encoder보다 훨씬 빠른 검색을 목표로 한다.*
+*출처: Khattab & Zaharia (2020), [“ColBERT”](https://arxiv.org/abs/2004.12832) · 논문은 풍부한 상호작용을 유지하면서 교차 인코더보다 훨씬 빠른 검색을 목표로 한다.*
 
 
 ---
 
-# Hybrid 후보 생성과 reranking
+# 혼합 후보 생성과 재순위화
 
 
-**BM25 top-100** → **Dense top-100** → **RRF / union** → **Cross-encoder top-20** → **Context top-5**
+**BM25 상위 100개** → **밀집 검색 상위 100개** → **RRF / 합집합** → **교차 인코더 상위 20개** → **문맥 상위 5개**
 
 
-- 1단계: recall 최적화
-- 2단계: 정밀한 query–document 상호작용
-- 생성 입력: 중복 제거, 문서 다양성, token budget 고려
+- 1단계: 재현율 최적화
+- 2단계: 정밀한 질의–문서 상호작용
+- 생성 입력: 중복 제거, 문서 다양성, 토큰 예산 고려
 
 
 > **주의**
-> reranker가 후보에 없는 문서를 복구할 수는 없다. 후보 recall과 rerank nDCG를 분리한다.
+> 재순위화 모델이 후보에 없는 문서를 복구할 수는 없다. 후보 재현율과 재순위화 nDCG를 분리한다.
 
 
 ---
@@ -198,7 +198,8 @@ $$s(q,d)=\sum_i\max_j Q_i^\top D_j$$
 
 
 > **정의**
-> **Retrieval-Augmented Generation**: 생성 모델의 parametric memory와 외부 문서 index의 non-parametric memory를 결합해, 입력마다 근거 문서를 검색하고 그 조건에서 출력을 생성하는 방식.
+> **검색 증강 생성(Retrieval-Augmented Generation, RAG)**: 모델 내부 지식과 외부 문서
+> 색인을 결합해, 입력마다 근거 문서를 검색하고 그 조건에서 출력을 생성하는 방식.
 
 
 원 논문의 두 변형:
@@ -206,7 +207,7 @@ $$s(q,d)=\sum_i\max_j Q_i^\top D_j$$
 - **RAG-Sequence**: 전체 출력 시퀀스에 같은 잠재 문서를 사용
 - **RAG-Token**: 토큰마다 다른 잠재 문서 조합 가능
 
-$$p(y\mid x)=\sum_{z\in top-k}p_\eta(z\mid x)p_\theta(y\mid x,z)$$
+$$p(y\mid x)=\sum_{z\in\operatorname{TopK}(x)}p_\eta(z\mid x)p_\theta(y\mid x,z)$$
 
 
 *출처: Lewis et al. (2020), [“Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks”](https://arxiv.org/abs/2005.11401)*
@@ -214,14 +215,14 @@ $$p(y\mid x)=\sum_{z\in top-k}p_\eta(z\mid x)p_\theta(y\mid x,z)$$
 
 ---
 
-# 논문 도판: retriever와 generator는 함께 학습된다
+# 논문 도판: 검색기와 생성기는 함께 학습된다
 
 ![w:980](assets/papers/rag-figure1.webp)
 
-*그림: query encoder와 document index가 top-k 문서를 찾고, generator가 각 문서를 조건으로 출력 확률을 계산한다.*
+*그림: 질의 인코더와 문서 색인이 상위 k개 문서를 찾고, 생성기가 각 문서를 조건으로 출력 확률을 계산한다.*
 
 > **교재 연결**
-> Chapter 8 실습은 이 구조를 **chunking → embedding → FAISS index → retrieve → prompt → generation**으로 분해해 구현한다.
+> Chapter 8 실습은 이 구조를 **문서 분할 → 임베딩 → FAISS 색인 → 검색 → 프롬프트 → 생성**으로 분해해 구현한다.
 
 *출처: Lewis et al. (2020), “Retrieval-Augmented Generation,” Figure 1 · [원 논문](https://arxiv.org/abs/2005.11401)*
 
@@ -245,13 +246,13 @@ $$p(y\mid x)=\sum_{z\in top-k}p_\eta(z\mid x)p_\theta(y\mid x,z)$$
 
 RAG 원 연구의 한 설정:
 
-- Wikipedia를 100-word 단위 약 2,100만 passage로 분할
-- DPR 계열 retriever와 MIPS/FAISS index 사용
-- parametric seq2seq generator + non-parametric index 결합
+- 위키백과를 100단어 단위의 문서 구절 약 2,100만 개로 분할
+- DPR 계열 검색기와 MIPS/FAISS 색인 사용
+- 매개변수형 seq2seq 생성기 + 비매개변수형 색인 결합
 
 
 > **논문 읽기**
-> **해석:** 이 숫자는 오늘의 권장 chunk size가 아니다. “지식 corpus를 검색 가능한 단위로 만들고 retriever와 generator를 공동/연계한다”는 설계를 읽는다.
+> **해석:** 이 숫자는 오늘의 권장 청크 크기가 아니다. “지식 말뭉치를 검색 가능한 단위로 만들고 검색기와 생성기를 공동/연계한다”는 설계를 읽는다.
 
 
 ---
@@ -260,12 +261,12 @@ RAG 원 연구의 한 설정:
 
 | 단계 | 실패 | 진단 지표 |
 |---|---|---|
-| ingestion | 최신 문서 없음/OCR 오류 | coverage, freshness |
-| chunking | 조건과 답 분리 | answer-containing recall |
-| retrieval | 관련 chunk top-k 밖 | Recall@k |
-| reranking | 정답 후보를 아래로 | nDCG/MRR before–after |
-| context | 중복/잘림/순서 | context utilization |
-| generation | 근거 무시/왜곡 | faithfulness, citation precision |
+| 문서 수집·적재 | 최신 문서 없음/OCR 오류 | 응답률, 최신성 |
+| 문서 분할 | 조건과 답 분리 | 정답 포함 재현율 |
+| 검색 | 관련 청크 상위 k개 밖 | 재현율@k |
+| 재순위화 | 정답 후보를 아래로 | 재순위화 전후 nDCG/MRR |
+| 문맥 | 중복/잘림/순서 | 문맥 활용률 |
+| 생성 | 근거 무시/왜곡 | 근거 충실성, 인용 정밀도 |
 
 > **핵심**
 > “RAG가 틀렸다”가 아니라 **어느 단계에서 정답이 사라졌는가**를 찾는다.
@@ -275,27 +276,27 @@ RAG 원 연구의 한 설정:
 # RAG 평가는 세 질문
 
 
-- **Retrieval** — 정답 근거가 top-k 안에 있는가?
-- **Grounding** — 답의 주장과 인용이 제공 근거에 의해 지지되는가?
-- **Answer** — 질문을 정확·완전하게 해결했는가?
+- **검색** — 정답 근거가 상위 k개 안에 있는가?
+- **근거 일치성(grounding)** — 답의 주장과 인용이 제공 근거에 의해 지지되는가?
+- **답변 정확성** — 질문을 정확하고 완전하게 해결했는가?
 
 
-- LLM-as-judge는 편리하지만 judge prompt/model/version과 사람 검증 표본이 필요
+- LLM 평가자는 편리하지만 평가용 프롬프트·모델·버전과 사람 검증 표본이 필요
 - 인용 존재 여부와 인용 정확성은 다르다.
-- “모르겠습니다”를 허용하는 abstention threshold를 평가한다.
+- “모르겠습니다”를 허용하는 응답 보류 임곗값을 평가한다.
 
 ---
 
 # 보안: 검색 문서는 신뢰할 수 없는 입력
 
-- 문서 안 prompt injection: “이전 지시를 무시하라”
-- 악성/오래된 문서의 index poisoning
-- 권한 없는 문서가 vector search로 노출
-- 개인 정보가 embedding/index/log에 잔존
+- 문서 안 프롬프트 주입: “이전 지시를 무시하라”
+- 악성/오래된 문서의 색인 오염
+- 권한 없는 문서가 벡터 검색으로 노출
+- 개인정보가 임베딩·색인·로그에 잔존
 
 
 > **주의**
-> **방어:** 권한 필터를 검색 전에 강제, source allowlist/versioning, context를 데이터로 구분, 인용 검증, 민감 정보 정책, adversarial eval.
+> **방어:** 권한 필터를 검색 전에 강제, 출처 허용 목록/버전 관리, 문맥을 데이터로 구분, 인용 검증, 민감 정보 정책, 적대적 평가.
 
 
 ---
@@ -324,23 +325,23 @@ answer = generator(query, reranked)
 
 
 > **교재 연결**
-> **각 줄의 로그:** chunk ID/source, vector norm/dim, raw retrieval score, rerank score, 최종 context, 인용, latency.
+> **각 줄의 로그:** 청크 ID/출처, 벡터의 크기(L2 노름)/차원, 1차 검색 원점수, 재순위화 점수, 최종 근거 문맥, 인용, 지연시간.
 
 
 ---
 
 # FAISS에서 자주 생기는 오류
 
-- cosine을 원하면서 normalize 없이 inner-product index 사용
+- 코사인 유사도를 원하면서 정규화 없이 내적 색인 사용
 - `float64`/object array를 넣어 타입 오류 또는 비효율
-- index의 dimension과 새 모델 출력 dimension 불일치
-- 모델을 교체하고 기존 index를 재생성하지 않음
-- query/document prefix를 다르게/빠뜨림
-- ID mapping을 잃어 원문·metadata로 돌아가지 못함
+- 색인의 차원과 새 모델 출력 차원 불일치
+- 모델을 교체하고 기존 색인을 재생성하지 않음
+- 질의/문서 접두문을 다르게/빠뜨림
+- ID 대응 관계를 잃어 원문·메타데이터로 돌아가지 못함
 
 
 > **실습**
-> **단위 테스트:** 자기 자신 검색, exact NumPy top-k와 FAISS top-k 일치, 저장–재로딩 후 ID/score 일치.
+> **단위 테스트:** 자기 자신 검색, NumPy 정확 탐색과 FAISS의 상위 k개 일치, 저장–재로딩 후 ID/점수 일치.
 
 
 ---
@@ -348,13 +349,13 @@ answer = generator(query, reranked)
 # 최신 동향: 단일 텍스트 벡터 너머
 
 
-- **Hybrid-native** — BGE-M3처럼 dense/sparse/multi-vector를 함께 학습.
-- **Visual documents** — ColPali처럼 PDF 페이지 이미지를 직접 multi-vector 검색.
-- **Adaptive retrieval** — 질문 난이도에 따라 검색·재검색·도구 사용을 조절.
+- **혼합 표현 통합** — BGE-M3처럼 밀집·희소·다중 벡터를 함께 학습.
+- **시각 문서 검색** — ColPali처럼 PDF 페이지 이미지를 직접 다중 벡터로 검색.
+- **적응형 검색** — 질문 난이도에 따라 검색·재검색·도구 사용을 조절.
 
 
 > **최신 동향**
-> 긴 context가 RAG를 없애는 것이 아니라 선택지를 바꾼다. corpus freshness, 권한, 인용, 비용이 필요하면 외부 검색은 여전히 중요하다.
+> 긴 문맥이 RAG를 없애는 것이 아니라 선택지를 바꾼다. 말뭉치 최신성, 권한, 인용, 비용을 관리해야 한다면 외부 검색은 여전히 중요하다.
 
 
 *출처: [BGE-M3 (2024)](https://arxiv.org/abs/2402.03216) · [ColPali (2024)](https://arxiv.org/abs/2407.01449)*
@@ -364,18 +365,18 @@ answer = generator(query, reranked)
 
 # 수업 활동: 실패 위치 찾기
 
-교수가 제공한 실패 query 5개에 대해:
+교수가 제공한 실패 질의 5개에 대해:
 
-1. gold evidence가 corpus에 있는가?
-2. 어떤 chunk에 들어갔는가?
-3. dense/BM25/hybrid의 rank는?
-4. reranker 전후 rank는?
-5. 최종 context에 포함됐는가?
-6. generator가 근거를 지켰는가?
+1. 정답 근거가 말뭉치에 있는가?
+2. 어떤 청크에 들어갔는가?
+3. 밀집/BM25/혼합의 순위는?
+4. 재순위화 모델 전후 순위는?
+5. 최종 문맥에 포함됐는가?
+6. 생성기가 근거를 지켰는가?
 
 
 > **실습**
-> **제출:** 각 실패를 ingestion/chunk/retrieval/rerank/context/generation 중 하나 이상으로 분류하고 최소 수정안을 제시한다.
+> **제출:** 각 실패를 문서 수집·적재/청크/검색/재순위화/문맥/생성 중 하나 이상으로 분류하고 최소 수정안을 제시한다.
 
 
 ---
@@ -384,24 +385,24 @@ answer = generator(query, reranked)
 
 1. HNSW의 `efSearch`가 늘면 일반적으로 무엇이 변하는가?
 2. PQ가 절약하는 자원과 잃을 수 있는 것은?
-3. ColBERT와 bi-encoder의 문서당 벡터 수 차이는?
-4. reranker가 후보 recall을 복구하지 못하는 이유는?
-5. RAG의 retrieval, grounding, answer 평가를 분리해야 하는 이유는?
+3. ColBERT와 bi-인코더의 문서당 벡터 수 차이는?
+4. 재순위화 모델이 후보 재현율을 복구하지 못하는 이유는?
+5. RAG의 검색, 근거 일치성, 답변 정확성 평가를 분리해야 하는 이유는?
 
 
 > **교재 연결**
 > **Notebook:** `../notebooks/week08.ipynb`
-> - 필수 실습: 200/500자 chunk, TF–IDF/dense 검색, 근거 인용과 거부 비교
-> - 선택 확장: exact/ANN, hybrid, reranking
+> - 필수 실습: 200/500자 청크, TF–IDF/밀집 임베딩 검색, 근거 인용과 응답 보류 비교
+> - 선택 확장: 정확 탐색/ANN, 혼합 검색, 재순위화
 
 
 ---
 
 # 핵심 정리
 
-- 벡터 검색은 표현 모델과 ANN 인덱스의 결합이다.
-- chunking과 metadata가 검색 가능한 근거의 경계를 정한다.
-- hybrid와 reranking은 서로 다른 오류를 줄이는 다단계 설계다.
+- 벡터 검색은 표현 모델과 ANN 색인의 결합이다.
+- 문서 분할과 메타데이터가 검색 가능한 근거의 경계를 정한다.
+- 혼합 검색과 재순위화는 서로 다른 오류를 줄이는 다단계 설계다.
 - RAG는 검색과 생성을 결합하지만 실패는 단계별로 평가해야 한다.
 - 보안·권한·출처·최신성은 정확도와 같은 1급 요구사항이다.
 

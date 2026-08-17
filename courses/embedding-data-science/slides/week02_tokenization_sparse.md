@@ -1,6 +1,6 @@
 ---
 marp: true
-theme: embedding-course
+theme: 임베딩-course
 paginate: true
 size: 16:9
 math: katex
@@ -32,23 +32,23 @@ title: "02주차 · 토큰화와 희소 표현"
 
 # 학습목표
 
-1. token, vocabulary, OOV, subword, byte의 의미를 설명한다.
+1. 토큰, vocabulary, OOV, 부분 단어, byte의 의미를 설명한다.
 2. BPE·WordPiece·Unigram의 목표와 차이를 구분한다.
 3. one-hot, BoW, TF–IDF, BM25를 직접 계산한다.
-4. 희소·밀집 표현의 오류 양상을 비교하고 hybrid 검색을 설계한다.
-5. Hands-On LLM 2장의 tokenizer 비교 코드를 한국어 예제로 재현한다.
+4. 희소·밀집 표현의 오류 양상을 비교하고 혼합 검색을 설계한다.
+5. Hands-On LLM 2장의 토큰화기 비교 코드를 한국어 예제로 재현한다.
 
 ---
 
 # 용어 지도: 문자열에서 ID까지
 
-문자열 (text) → 정규화 (normalize) → 분절 (pre-tokenize) → 서브워드 (model) → 정수 ID (encode)
+문자열(text) → 정규화(normalize) → 사전 분절(pre-tokenize) → 부분 단어 모델 → 정수 ID(encode)
 
-**토큰(token)**: 모델이 한 위치에서 처리하는 기호 단위.  
-**어휘집(vocabulary)**: 토큰과 정수 ID의 유한한 대응표.  
+**토큰(token)**: 모델이 한 위치에서 처리하는 기호 단위.
+**어휘집(vocabulary)**: 토큰과 정수 ID의 유한한 대응표.
 **OOV(out-of-vocabulary)**: 어휘집에 없는 입력 단위.
 
-토큰은 언어학적 “단어”와 같지 않으며, tokenizer 버전도 모델의 일부다.
+토큰은 언어학적 “단어”와 같지 않으며, 토큰화기 버전도 모델의 일부다.
 
 ---
 
@@ -58,12 +58,12 @@ title: "02주차 · 토큰화와 희소 표현"
 |---|---|---|
 | 단어/형태소 | 해석이 쉬움 | 신조어·복합어·형태 변이, 분석기 의존 |
 | 문자 | OOV가 거의 없음 | 시퀀스가 길고 의미 단위가 잘게 쪼개짐 |
-| subword | 길이·OOV의 절충 | 분절이 언어·데이터 빈도에 민감 |
+| 부분 단어 | 길이·OOV의 절충 | 분절이 언어·데이터 빈도에 민감 |
 | byte | 모든 문자열 표현 가능 | 토큰 수 증가, 사람이 읽기 어려움 |
 
 
 > **주의**
-> **한국어:** 조사·어미, 띄어쓰기 변이, 한글/영문/숫자 혼용 때문에 영어 tokenizer의 토큰 효율과 의미 보존이 그대로 유지되지 않는다.
+> **한국어:** 조사·어미, 띄어쓰기 변이, 한글/영문/숫자 혼용 때문에 영어 토큰화기의 토큰 효율과 의미 보존이 그대로 유지되지 않는다.
 
 
 ---
@@ -91,7 +91,7 @@ title: "02주차 · 토큰화와 희소 표현"
 # WordPiece와 Unigram
 
 ## WordPiece
-후보 결합이 언어모델 우도 개선에 얼마나 기여하는지 고려하는 계열. BERT tokenizer로 널리 알려짐.
+후보 결합이 언어모델 우도 개선에 얼마나 기여하는지 고려하는 계열. BERT 토큰화기로 널리 알려짐.
 
 예: `playing` → `play`, `##ing`
 
@@ -100,7 +100,7 @@ title: "02주차 · 토큰화와 희소 표현"
 
 SentencePiece에서 사용 가능
 
-> **참고:** 이름만으로 구현을 단정하지 말고 tokenizer 설정 파일의 normalizer, pre-tokenizer, model, post-processor를 확인한다.
+> **참고:** 이름만으로 구현을 단정하지 말고 토큰화기 설정 파일의 normalizer, pre-토큰화기, 모델, post-processor를 확인한다.
 
 ---
 
@@ -109,13 +109,13 @@ SentencePiece에서 사용 가능
 | | |
 |---|---|
 | **fertility** | 단어/문장당 생성 토큰 수 |
-| **coverage** | 문자·도메인·언어를 손실 없이 표현하는가 |
+| **응답률** | 문자·도메인·언어를 손실 없이 표현하는가 |
 | **downstream** | 검색·분류 성능과 비용이 어떻게 변하는가 |
 
 추가 진단:
 
 - 평균만 보지 말고 언어·길이·고유명사별 분포를 본다.
-- 같은 context window에서 토큰 수가 많으면 실제 담을 수 있는 내용이 줄어든다.
+- 같은 문맥 창에서 토큰 수가 많으면 실제 담을 수 있는 내용이 줄어든다.
 - `[UNK]`, 잘림(truncation), 정규화 손실을 별도로 집계한다.
 
 ---
@@ -130,12 +130,12 @@ $$\text{학교}=[0,1,0,0,0]$$
 
 $$\mathbf x_d=[c(t_1,d),\dots,c(t_{|V|},d)]$$
 
-- 장점: 해석 가능, 정확한 키워드 보존, 빠른 inverted index
+- 장점: 해석 가능, 정확한 키워드 보존, 빠른 inverted 색인
 - 약점: 동의어 연결 부족, 어순·장거리 문맥 손실, 어휘가 클수록 고차원
 
 
 > **정의**
-> **희소 벡터(sparse vector)**: 대부분 좌표가 0인 벡터. 실제 저장은 0이 아닌 인덱스와 값만 보관한다.
+> **희소 벡터(희소 vector)**: 대부분 좌표가 0인 벡터. 실제 저장은 0이 아닌 색인와 값만 보관한다.
 
 
 ---
@@ -154,7 +154,7 @@ $$\operatorname{tfidf}(t,d)=\operatorname{tf}(t,d)\times\log\frac{N+1}{\operator
 
 
 > **주의**
-> 라이브러리마다 log, smoothing, sublinear TF, L2 normalization이 다르다. “TF–IDF”라는 이름만 같고 값은 다를 수 있다.
+> 라이브러리마다 log, smoothing, sublinear TF, L2 정규화이 다르다. “TF–IDF”라는 이름만 같고 값은 다를 수 있다.
 
 
 ---
@@ -181,7 +181,7 @@ $$\operatorname{BM25}(q,d)=\sum_{t\in q}\operatorname{IDF}(t)
 \frac{f(t,d)(k_1+1)}{f(t,d)+k_1(1-b+b|d|/\operatorname{avgdl})}$$
 
 - 같은 단어를 100번 쓴다고 점수가 100배 되지 않는 **TF saturation**
-- 긴 문서는 단어가 우연히 많이 등장하므로 **length normalization**
+- 긴 문서는 단어가 우연히 많이 등장하므로 **length 정규화**
 - $k_1$: 포화 속도, $b$: 길이 보정 강도
 
 
@@ -196,7 +196,7 @@ $$\operatorname{BM25}(q,d)=\sum_{t\in q}\operatorname{IDF}(t)
 | 쿼리 | 희소 검색 | 밀집 검색 |
 |---|---|---|
 | “근로장학 B-17 서식” | 정확한 코드에 강함 | 코드가 희석될 수 있음 |
-| “등록금을 나눠 낼 수 있나요?” | “분할납부”와 lexical gap | 의미 대응 가능 |
+| “등록금을 나눠 낼 수 있나요?” | “분할납부”와 어휘 gap | 의미 대응 가능 |
 | “신청하지 않은 학생” | 부정 토큰에 민감 | 부정을 놓칠 수 있음 |
 | 최신 법령명 | 즉시 인덱싱 가능 | 학습 데이터에 없을 수 있음 |
 
@@ -205,19 +205,19 @@ $$\operatorname{BM25}(q,d)=\sum_{t\in q}\operatorname{IDF}(t)
 
 ---
 
-# Hybrid retrieval
+# 희소·밀집 혼합 검색
 
 점수 정규화 후 가중합:
 
 $$s_{hybrid}(q,d)=\alpha\,\tilde s_{dense}(q,d)+(1-\alpha)\,\tilde s_{sparse}(q,d)$$
 
-또는 순위만 결합하는 Reciprocal Rank Fusion:
+또는 순위만 결합하는 역순위 융합(Reciprocal Rank Fusion, RRF):
 
 $$\operatorname{RRF}(d)=\sum_r\frac{1}{k+\operatorname{rank}_r(d)}$$
 
 - 서로 다른 점수 범위를 그대로 더하면 안 된다.
-- $\alpha$, $k$는 validation query로 정한다.
-- metadata filter는 결합 전/후 어느 단계에 적용하는지 기록한다.
+- $\alpha$, $k$는 개발 데이터 질의로 정한다.
+- 메타데이터 필터는 결합 전/후 어느 단계에 적용하는지 기록한다.
 
 ---
 
@@ -225,7 +225,7 @@ $$\operatorname{RRF}(d)=\sum_r\frac{1}{k+\operatorname{rank}_r(d)}$$
 
 # Hands-On LLM 연결
 
-## tokenizer 비교에서 “토큰 수”와 “의미 손실”을 동시에 본다
+## 토큰화기 비교에서 “토큰 수”와 “의미 손실”을 동시에 본다
 
 ---
 
@@ -271,19 +271,19 @@ scores = cosine_similarity(q, X)[0]
 
 
 > **실습**
-> **shape 질문:** `X.nnz / (X.shape[0]*X.shape[1])`은 무엇을 측정하는가?
+> **텐서 모양 질문:** `X.nnz / (X.shape[0]*X.shape[1])`은 무엇을 측정하는가?
 
 
 ---
 
-# 최신 동향: sparse·dense·multi-vector를 한 모델에
+# 최신 동향: 희소·밀집·multi-vector를 한 모델에
 
 **BGE-M3**는 하나의 모델에서 세 검색 표현을 지원하도록 설계됐다.
 
 
-- **dense** — 문장/문서 단일 벡터
-- **sparse** — 학습된 lexical weight
-- **multi-vector** — 토큰 수준 late interaction
+- **밀집** — 문장/문서 단일 벡터
+- **희소** — 학습된 어휘 가중치
+- **다중 벡터** — 토큰 수준 후기 상호작용
 
 
 논문 보고 범위: 100개 이상 언어, 최대 8,192 토큰 입력. 그러나 실제 선택은 자신의 한국어·도메인 평가로 결정한다.
@@ -298,29 +298,29 @@ scores = cosine_similarity(q, X)[0]
 
 ![w:920](assets/papers/bge-m3-figure1.webp)
 
-*그림: 다국어·다기능·다중 입자도를 하나의 embedding model에서 지원하려는 BGE-M3의 설계 범위.*
+*그림: 다국어·다기능·다중 입자도를 하나의 임베딩 모델에서 지원하려는 BGE-M3의 설계 범위.*
 
 > **교재 연결**
-> Chapter 2의 tokenizer·dense embedding과 Chapter 8의 semantic search를 연결하면, 토큰화가 **sparse weight와 multi-vector 표현**에도 영향을 준다는 점이 드러난다.
+> Chapter 2의 토큰화기·밀집 임베딩과 Chapter 8의 semantic search를 연결하면, 토큰화가 **희소 가중치와 multi-vector 표현**에도 영향을 준다는 점이 드러난다.
 
 *출처: Chen et al. (2024), “M3-Embedding,” Figure 1 · [ACL Anthology](https://aclanthology.org/2024.findings-acl.137/)*
 
 ---
 
-# 실험 설계: tokenizer × 표현
+# 실험 설계: 토큰화기 × 표현
 
 같은 30개 문서·10개 쿼리에 대해 비교한다.
 
-| 실험군 | tokenizer | 표현 | 측정 |
+| 실험군 | 토큰화기 | 표현 | 측정 |
 |---|---|---|---|
-| A | whitespace | TF–IDF unigram | Recall@5, vocab, sparsity |
+| A | whitespace | TF–IDF unigram | 재현율@5, vocab, sparsity |
 | B | 형태소/사용자 사전 | TF–IDF 1–2gram | 동일 |
-| C | 모델 subword | dense embedding | Recall@5, 토큰 수, 시간 |
-| D | B + C | RRF hybrid | Recall@5, 오류 유형 |
+| C | 모델 부분 단어 | 밀집 임베딩 | 재현율@5, 토큰 수, 시간 |
+| D | B + C | RRF 혼합 | 재현율@5, 오류 유형 |
 
 
 > **주의**
-> 하이퍼파라미터를 test set에서 고르면 평가 누수다. train/validation/test 역할을 구분한다.
+> 하이퍼파라미터를 최종 평가 데이터에서 고르면 평가 누수다. 학습/개발 데이터/최종 평가 역할을 구분한다.
 
 
 ---
@@ -328,28 +328,28 @@ scores = cosine_similarity(q, X)[0]
 # 수업 활동: 분절이 답을 바꾸는 순간
 
 1. 팀마다 고유명사·부정·숫자·신조어가 포함된 한국어 문장 5개를 만든다.
-2. 두 tokenizer의 토큰과 ID를 비교한다.
+2. 두 토큰화기의 토큰과 ID를 비교한다.
 3. TF–IDF 상위 특성 10개를 확인한다.
 4. “좋은 분절”을 토큰 모양이 아니라 검색 결과로 판정한다.
 
 
 > **실습**
-> **제출 한 문장:** “Tokenizer A는 ___ 때문에 토큰 수는 줄었지만/늘었지만, ___ 쿼리에서 Recall@5가 ___했다.”
+> **제출 한 문장:** “토큰화기 A는 ___ 때문에 토큰 수는 줄었지만/늘었지만, ___ 질의에서 재현율@5가 ___했다.”
 
 
 ---
 
 # 형성평가
 
-1. subword가 OOV 문제를 완화하는 원리는?
+1. 부분 단어가 OOV 문제를 완화하는 원리는?
 2. TF–IDF에서 모든 문서에 등장하는 단어의 IDF는 왜 작아지는가?
 3. BM25가 TF–IDF에 추가한 두 핵심 보정은?
-4. 희소와 밀집 검색을 결합할 때 raw score 합이 위험한 이유는?
-5. tokenizer 비교에서 평균 토큰 수 외에 필요한 두 지표는?
+4. 희소와 밀집 검색을 결합할 때 원점수 합이 위험한 이유는?
+5. 토큰화기 비교에서 평균 토큰 수 외에 필요한 두 지표는?
 
 
 > **교재 연결**
-> **Notebook:** `../notebooks/week02.ipynb` · tokenizer 결과와 sparse matrix를 모두 저장해 재현성을 확보한다.
+> **Notebook:** `../notebooks/week02.ipynb` · 토큰화기 결과와 희소 matrix를 모두 저장해 재현성을 확보한다.
 
 
 ---
@@ -357,9 +357,9 @@ scores = cosine_similarity(q, X)[0]
 # 핵심 정리
 
 - 토큰화는 모델이 관측하는 단위와 계산 비용을 동시에 정한다.
-- TF–IDF/BM25는 정확한 lexical evidence를 보존하는 강한 기준선이다.
-- 밀집 표현은 lexical gap을 줄이지만 부정·코드·최신 고유명사를 놓칠 수 있다.
-- hybrid는 두 오류 유형을 결합하되 validation으로 결합 규칙을 정한다.
+- TF–IDF/BM25는 정확한 어휘 evidence를 보존하는 강한 기준선이다.
+- 밀집 표현은 어휘 gap을 줄이지만 부정·코드·최신 고유명사를 놓칠 수 있다.
+- 혼합는 두 오류 유형을 결합하되 개발 데이터으로 결합 규칙을 정한다.
 - 최신 모델도 희소 표현을 버리기보다 통합하는 방향으로 발전한다.
 
 > **핵심**
@@ -373,6 +373,6 @@ scores = cosine_similarity(q, X)[0]
 
 - Sennrich et al. (2016), “Neural Machine Translation of Rare Words with Subword Units.” [ACL Anthology](https://aclanthology.org/P16-1162/)
 - Kudo (2018), “Subword Regularization.” [ACL Anthology](https://aclanthology.org/P18-1007/)
-- Robertson & Zaragoza (2009), “The Probabilistic Relevance Framework: BM25 and Beyond.” [DOI](https://doi.org/10.1561/1500000019)
+- Robertson & Zaragoza (2009), “The Probabilistic 관련성 Framework: BM25 and Beyond.” [DOI](https://doi.org/10.1561/1500000019)
 - Chen et al. (2024), “BGE M3-Embedding.” [ACL Anthology](https://aclanthology.org/2024.findings-acl.137/)
 - Hands-On Large Language Models, Chapter 2. [upstream](https://github.com/HandsOnLLM/Hands-On-Large-Language-Models/blob/main/chapter02/Chapter%202%20-%20Tokens%20and%20Token%20Embeddings.ipynb)
