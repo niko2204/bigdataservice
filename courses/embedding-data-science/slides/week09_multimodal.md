@@ -11,9 +11,9 @@ title: "09주차 · 멀티모달 임베딩"
 
 <!-- _class: lead -->
 
-<p class="kicker">WEEK 09 · MULTIMODAL EMBEDDINGS</p>
+###### WEEK 09 · MULTIMODAL EMBEDDINGS
 
-# 텍스트와 이미지를<br>같은 의미 공간에 정렬하기
+# 텍스트와 이미지를 같은 의미 공간에 정렬하기
 
 **dual encoder → contrastive alignment → visual document retrieval → omni-modal**
 
@@ -21,12 +21,14 @@ title: "09주차 · 멀티모달 임베딩"
 
 # 다른 센서, 공유할 수 있는 의미
 
-<div class="cols">
-<div class="card"><h3>텍스트</h3><p>“푸른 바다 위를 항해하는 흰 배”</p></div>
-<div class="card"><h3>이미지</h3><p>픽셀 배열 속 바다·배·색·구도</p></div>
-</div>
 
-<div class="definition"><b>멀티모달 임베딩</b>: 서로 다른 양식(modality)의 입력을 비교 가능한 공동 공간 또는 정렬된 표현으로 매핑하는 학습된 표현.</div>
+- **텍스트** — “푸른 바다 위를 항해하는 흰 배”
+- **이미지** — 픽셀 배열 속 바다·배·색·구도
+
+
+> **정의**
+> **멀티모달 임베딩**: 서로 다른 양식(modality)의 입력을 비교 가능한 공동 공간 또는 정렬된 표현으로 매핑하는 학습된 표현.
+
 
 목표: 대응 image–text는 가깝게, 비대응 쌍은 멀게.
 
@@ -44,11 +46,11 @@ title: "09주차 · 멀티모달 임베딩"
 
 # 멀티모달 설계의 세 방식
 
-<div class="three">
-<div class="card"><h3>Dual encoder</h3><p>각 modality를 독립 encode 후 공동 공간에서 비교. 대규모 검색에 유리.</p></div>
-<div class="card"><h3>Fusion encoder</h3><p>토큰/패치를 함께 attention. 세밀하지만 모든 쌍 계산이 비쌈.</p></div>
-<div class="card"><h3>Late interaction</h3><p>각자 사전 계산한 다중 벡터를 query 시점에 세밀하게 매칭.</p></div>
-</div>
+
+- **Dual encoder** — 각 modality를 독립 encode 후 공동 공간에서 비교. 대규모 검색에 유리.
+- **Fusion encoder** — 토큰/패치를 함께 attention. 세밀하지만 모든 쌍 계산이 비쌈.
+- **Late interaction** — 각자 사전 계산한 다중 벡터를 query 시점에 세밀하게 매칭.
+
 
 텍스트 검색의 bi-/cross-/ColBERT 구분과 구조적으로 대응한다.
 
@@ -65,7 +67,10 @@ Vision Transformer의 기본 직관:
 
 $$N=\frac{HW}{P^2},\qquad X_{patch}\in\mathbb R^{N\times d}$$
 
-<div class="warning">작은 글자·표·세밀한 도형은 image resolution과 patch size 때문에 손실될 수 있다.</div>
+
+> **주의**
+> 작은 글자·표·세밀한 도형은 image resolution과 patch size 때문에 손실될 수 있다.
+
 
 ---
 
@@ -79,35 +84,45 @@ $$S_{ij}=\frac{\hat I_i^\top\hat T_j}{\tau}$$
 
 $$\mathcal L=\frac{1}{2}(\mathcal L_{I\rightarrow T}+\mathcal L_{T\rightarrow I})$$
 
-<div class="paper-note">원 연구는 웹에서 수집한 4억 image–text pair로 학습하고 30개가 넘는 vision dataset에서 zero-shot transfer를 연구했다.</div>
 
-<div class="source">Radford et al. (2021), <a href="https://arxiv.org/abs/2103.00020">“Learning Transferable Visual Models From Natural Language Supervision”</a></div>
+> **논문 읽기**
+> 원 연구는 웹에서 수집한 4억 image–text pair로 학습하고 30개가 넘는 vision dataset에서 zero-shot transfer를 연구했다.
+
+
+*출처: Radford et al. (2021), [“Learning Transferable Visual Models From Natural Language Supervision”](https://arxiv.org/abs/2103.00020)*
+
 
 ---
 
 # 논문 핵심 도판: CLIP의 세 단계
 
-<div class="figure figure-sm">
 
-![CLIP Figure 1](https://ar5iv.labs.arxiv.org/html/2103.00020/assets/main-diagrams.png)
+![w:960](assets/papers/clip-figure1.webp)
 
-</div>
 
-<div class="caption">(1) image–text 대조 사전학습 → (2) label 문장으로 분류기 생성 → (3) zero-shot 예측.</div>
+*그림: (1) image–text 대조 사전학습 → (2) label 문장으로 분류기 생성 → (3) zero-shot 예측.*
 
-<div class="source">Radford et al. (2021), Figure 1 · <a href="https://ar5iv.labs.arxiv.org/html/2103.00020">원문 HTML</a></div>
+
+> **교재 연결**
+> Chapter 9의 CLIP 코드는 image embedding과 text embedding을 직접 비교하고, prompt 문구가 zero-shot classifier의 결정경계를 어떻게 바꾸는지 실험한다.
+
+
+*출처: Radford et al. (2021), Figure 1 · [원문 HTML](https://ar5iv.labs.arxiv.org/html/2103.00020)*
+
 
 ---
 
 # Figure 1 읽기
 
-<div class="three">
-<div class="card"><h3>1. Pre-train</h3><p>대각선 pair 점수는 높게, 나머지는 낮게.</p></div>
-<div class="card"><h3>2. Text classifier</h3><p>`A photo of a {label}`을 encode해 클래스 weight로.</p></div>
-<div class="card"><h3>3. Predict</h3><p>새 image embedding과 class text embedding의 cosine 비교.</p></div>
-</div>
 
-<div class="definition">분류 head를 label data로 다시 학습하지 않고 자연어 label 설명으로 동적으로 구성하는 것이 zero-shot transfer의 핵심이다.</div>
+- **1. Pre-train** — 대각선 pair 점수는 높게, 나머지는 낮게.
+- **2. Text classifier** — `A photo of a {label}`을 encode해 클래스 weight로.
+- **3. Predict** — 새 image embedding과 class text embedding의 cosine 비교.
+
+
+> **정의**
+> 분류 head를 label data로 다시 학습하지 않고 자연어 label 설명으로 동적으로 구성하는 것이 zero-shot transfer의 핵심이다.
+
 
 ---
 
@@ -143,9 +158,9 @@ $$\mathcal L=\frac{1}{2}(\mathcal L_{I\rightarrow T}+\mathcal L_{T\rightarrow I}
 
 # OCR-first 문서 검색
 
-<div class="pipeline">
-<div>PDF page</div><span>→</span><div>OCR/layout</div><span>→</span><div>text chunks</div><span>→</span><div>text embedding</div><span>→</span><div>retrieve</div>
-</div>
+
+**PDF page** → **OCR/layout** → **text chunks** → **text embedding** → **retrieve**
+
 
 장점:
 
@@ -163,9 +178,9 @@ $$\mathcal L=\frac{1}{2}(\mathcal L_{I\rightarrow T}+\mathcal L_{T\rightarrow I}
 
 페이지 이미지를 vision-language encoder로 직접 표현:
 
-<div class="pipeline">
-<div>page image</div><span>→</span><div>patch<br>multi-vectors</div><span>↔</span><div>query token<br>multi-vectors</div><span>→</span><div>late interaction</div>
-</div>
+
+**page image** → **patch multi-vectors** → **query token multi-vectors** → **late interaction**
+
 
 - 원래 layout·표·그림·font 단서를 보존
 - page당 다중 벡터라 저장·검색 비용 증가
@@ -175,15 +190,15 @@ $$\mathcal L=\frac{1}{2}(\mathcal L_{I\rightarrow T}+\mathcal L_{T\rightarrow I}
 
 # 논문 도판: ColPali의 token–patch 유사도
 
-<div class="figure">
 
-![ColPali similarity map for energy query](https://arxiv.org/html/2407.01449v2/images/similarity_maps/similarity_map_energy.png)
+![h:420](assets/papers/colpali-similarity-map.webp)
 
-</div>
 
-<div class="caption">텍스트 query token이 문서 페이지의 어떤 시각 영역과 높은 late-interaction 점수를 만드는지 보여주는 similarity map.</div>
+*그림: 텍스트 query token이 문서 페이지의 어떤 시각 영역과 높은 late-interaction 점수를 만드는지 보여주는 similarity map.*
 
-<div class="source">Faysse et al. (2024), “ColPali,” similarity map · <a href="https://arxiv.org/abs/2407.01449">원 논문</a></div>
+
+*출처: Faysse et al. (2024), “ColPali,” similarity map · [원 논문](https://arxiv.org/abs/2407.01449)*
+
 
 ---
 
@@ -197,7 +212,10 @@ $$\mathcal L=\frac{1}{2}(\mathcal L_{I\rightarrow T}+\mathcal L_{T\rightarrow I}
 - ColBERT식 late interaction으로 query token과 page patch 매칭
 - 시각적으로 풍부한 문서 검색을 위한 ViDoRe benchmark 제시
 
-<div class="warning">similarity map은 모델 내부 점수 시각화다. 정답 근거의 인과적 증명이나 OCR 정확도를 대신하지 않는다.</div>
+
+> **주의**
+> similarity map은 모델 내부 점수 시각화다. 정답 근거의 인과적 증명이나 OCR 정확도를 대신하지 않는다.
+
 
 ---
 
@@ -205,17 +223,19 @@ $$\mathcal L=\frac{1}{2}(\mathcal L_{I\rightarrow T}+\mathcal L_{T\rightarrow I}
 
 # Hands-On LLM 연결
 
-## Chapter 9의 VLM을<br>표현·검색·생성으로 분해한다
+## Chapter 9의 VLM을 표현·검색·생성으로 분해한다
 
 ---
 
 # 멀티모달 LLM 입력 흐름
 
-<div class="pipeline">
-<div>이미지</div><span>→</span><div>Vision encoder</div><span>→</span><div>visual tokens</div><span>+</span><div>text tokens</div><span>→</span><div>LLM generation</div>
-</div>
 
-<div class="hllm"><b>구분:</b> VLM이 이미지를 설명하는 생성 능력과, corpus 전체를 빠르게 검색하는 embedding 능력은 같은 평가 문제가 아니다.</div>
+**이미지** → **Vision encoder** → **visual tokens** → **text tokens** → **LLM generation**
+
+
+> **교재 연결**
+> **구분:** VLM이 이미지를 설명하는 생성 능력과, corpus 전체를 빠르게 검색하는 embedding 능력은 같은 평가 문제가 아니다.
+
 
 확인할 tensor/조건:
 
@@ -253,19 +273,23 @@ output = vlm.generate(image, prompt)
 | Gemini Embedding 2 | text/image/audio/video 공동 공간 | 2026 preprint |
 | jina-v5-omni | text/image/audio/video, GELATO | 2026 preprint |
 
-<div class="source"><a href="https://arxiv.org/abs/2506.18902">Jina v4</a> · <a href="https://arxiv.org/abs/2601.04720">Qwen3-VL-Embedding</a> · <a href="https://arxiv.org/html/2605.27295v1">Gemini Embedding 2</a> · <a href="https://arxiv.org/html/2605.08384v2">Jina v5 omni</a></div>
+
+*출처: [Jina v4](https://arxiv.org/abs/2506.18902) · [Qwen3-VL-Embedding](https://arxiv.org/abs/2601.04720) · [Gemini Embedding 2](https://arxiv.org/html/2605.27295v1) · [Jina v5 omni](https://arxiv.org/html/2605.08384v2)*
+
 
 ---
 
 # 최신 동향 ② “한 벡터”에서 선택 가능한 표현으로
 
-<div class="three">
-<div class="card"><h3>Single vector</h3><p>빠른 1차 검색</p></div>
-<div class="card"><h3>Multi-vector</h3><p>토큰–패치 정밀 매칭</p></div>
-<div class="card"><h3>Matryoshka</h3><p>차원별 비용 조절</p></div>
-</div>
 
-<div class="trend">모델 하나가 여러 모달리티·과업·granularity를 지원하는 방향이지만, index 복잡도·adapter 선택·평가 범위가 함께 커진다.</div>
+- **Single vector** — 빠른 1차 검색
+- **Multi-vector** — 토큰–패치 정밀 매칭
+- **Matryoshka** — 차원별 비용 조절
+
+
+> **최신 동향**
+> 모델 하나가 여러 모달리티·과업·granularity를 지원하는 방향이지만, index 복잡도·adapter 선택·평가 범위가 함께 커진다.
+
 
 ---
 
@@ -277,7 +301,10 @@ output = vlm.generate(image, prompt)
 - prompt에 따라 class definition이 이동
 - adversarial image/text가 공동 공간을 교란
 
-<div class="warning"><b>배포 전:</b> 얼굴/민감 속성 용도 제한, 집단별 평가, consent와 retention, access control, human review를 요구사항으로 둔다.</div>
+
+> **주의**
+> **배포 전:** 얼굴/민감 속성 용도 제한, 집단별 평가, consent와 retention, access control, human review를 요구사항으로 둔다.
+
 
 ---
 
@@ -293,7 +320,10 @@ output = vlm.generate(image, prompt)
 
 페이지 유형별 slice: 본문 / 표 / 차트 / 스캔 / 2단 편집.
 
-<div class="lab"><b>결론:</b> 평균뿐 아니라 어떤 layout에서 어느 방식이 이기는지 오류 지도를 작성한다.</div>
+
+> **실습**
+> **결론:** 평균뿐 아니라 어떤 layout에서 어느 방식이 이기는지 오류 지도를 작성한다.
+
 
 ---
 
@@ -305,7 +335,10 @@ output = vlm.generate(image, prompt)
 4. OCR-first와 page-image 검색의 정보 손실이 각각 무엇인가?
 5. ColPali가 single-vector CLIP 검색과 다른 점은?
 
-<div class="hllm"><b>Notebook:</b> `../notebooks/week09.ipynb` · image/text similarity와 prompt 변화를 기록한다.</div>
+
+> **교재 연결**
+> **Notebook:** `../notebooks/week09.ipynb` · image/text similarity와 prompt 변화를 기록한다.
+
 
 ---
 
@@ -317,7 +350,8 @@ output = vlm.generate(image, prompt)
 - 문서 검색은 OCR text와 visual layout 중 무엇을 보존할지 선택한다.
 - 최신 방향은 single/multi-vector, Matryoshka, omni-modal을 한 모델에 통합한다.
 
-<p class="takeaway">다음 주: 모든 선택을<br><mark>하나의 재현 가능한 프로젝트</mark>로 통합한다.</p>
+> **핵심**
+> 다음 주: 모든 선택을 **하나의 재현 가능한 프로젝트**로 통합한다.
 
 ---
 

@@ -11,9 +11,9 @@ title: "06주차 · 임베딩 데이터 분석"
 
 <!-- _class: lead -->
 
-<p class="kicker">WEEK 06 · EMBEDDING ANALYTICS</p>
+###### WEEK 06 · EMBEDDING ANALYTICS
 
-# 임베딩을 데이터로:<br>분류·군집·토픽 분석
+# 임베딩을 데이터로: 분류·군집·토픽 분석
 
 **벡터 생성은 분석의 끝이 아니라 feature engineering의 시작**
 
@@ -21,7 +21,8 @@ title: "06주차 · 임베딩 데이터 분석"
 
 # 오늘의 중심 질문
 
-<p class="takeaway">임베딩 공간에 구조가 “보인다”는 것과<br><mark>재현 가능한 분석 결과</mark>는 어떻게 다른가?</p>
+> **핵심**
+> 임베딩 공간에 구조가 “보인다”는 것과 **재현 가능한 분석 결과**는 어떻게 다른가?
 
 - 시각화는 가설 생성 도구다.
 - 분류/군집 지표는 정의한 label과 거리에 종속된다.
@@ -51,7 +52,10 @@ $$E\in\mathbb R^{n\times d},\qquad y\in\{1,\dots,C\}^{n}$$
 - normalize 전후 어떤 알고리즘을 쓰는가?
 - missing/empty/truncated 문서는 어떻게 처리했는가?
 
-<div class="warning"><b>그룹 누수:</b> 같은 문서의 chunk를 무작위 분할하면 거의 동일한 이웃이 train/test에 생겨 성능이 부풀려진다.</div>
+
+> **주의**
+> **그룹 누수:** 같은 문서의 chunk를 무작위 분할하면 거의 동일한 이웃이 train/test에 생겨 성능이 부풀려진다.
+
 
 ---
 
@@ -66,7 +70,10 @@ $$P(y=c\mid z)=\operatorname{softmax}(Wz+b)_c$$
 - 모델 전체 fine-tuning의 이득과 “표현 자체”의 품질을 구분
 - regularization과 클래스 불균형 가중치 필요
 
-<div class="definition"><b>probe</b>: 표현에 특정 정보가 얼마나 쉽게 읽히는지 측정하는 보조 모델. probe가 복잡할수록 표현과 probe 능력을 구분하기 어렵다.</div>
+
+> **정의**
+> **probe**: 표현에 특정 정보가 얼마나 쉽게 읽히는지 측정하는 보조 모델. probe가 복잡할수록 표현과 probe 능력을 구분하기 어렵다.
+
 
 ---
 
@@ -99,7 +106,10 @@ $$\hat y=\arg\max_c\cos(f_\theta(x),p_c)$$
 - 여러 prompt를 평균하는 ensemble 가능
 - threshold/“기타” 클래스 없으면 모든 입력을 억지로 분류
 
-<div class="lab"><b>비교:</b> label name만, 정의문, 3개 예시를 넣은 prototype의 macro-F1을 비교한다.</div>
+
+> **실습**
+> **비교:** label name만, 정의문, 3개 예시를 넣은 prototype의 macro-F1을 비교한다.
+
 
 ---
 
@@ -113,7 +123,10 @@ $$\hat y=\arg\max_c\cos(f_\theta(x),p_c)$$
 | macro-F1 | 클래스별 F1 평균 | 희귀 클래스 동일 가중 |
 | confusion matrix | 어떤 클래스를 무엇과 혼동? | 원인 분석의 시작 |
 
-<div class="warning">threshold는 validation에서 결정하고 test에서는 고정한다. test를 보며 threshold를 조절하면 누수다.</div>
+
+> **주의**
+> threshold는 validation에서 결정하고 test에서는 고정한다. test를 보며 threshold를 조절하면 누수다.
+
 
 ---
 
@@ -126,19 +139,24 @@ $$\min_{C_1,\dots,C_K}\sum_{k=1}^{K}\sum_{z_i\in C_k}\|z_i-\mu_k\|_2^2$$
 - 초기화와 scale에 민감 → 여러 seed, k-means++
 - L2-normalized 벡터의 cosine 구조에는 spherical k-means가 더 자연스러울 수 있다.
 
-<div class="definition"><b>cluster</b>는 데이터에 “원래 있는 정답”이 아니라 알고리즘·거리·해상도가 만든 분할일 수 있다.</div>
+
+> **정의**
+> **cluster**는 데이터에 “원래 있는 정답”이 아니라 알고리즘·거리·해상도가 만든 분할일 수 있다.
+
 
 ---
 
 # 다른 군집 알고리즘
 
-<div class="three">
-<div class="card"><h3>Hierarchical</h3><p>병합/분할의 dendrogram. 거리와 linkage 선택이 핵심.</p></div>
-<div class="card"><h3>DBSCAN</h3><p>밀도 기반, noise 허용. $\epsilon$과 min samples에 민감.</p></div>
-<div class="card"><h3>HDBSCAN</h3><p>여러 밀도 수준의 안정적 군집을 찾고 noise를 분리.</p></div>
-</div>
 
-<div class="paper-note">BERTopic은 기본적으로 UMAP으로 축소한 표현에 HDBSCAN을 적용한다. 군집 결과는 두 알고리즘의 하이퍼파라미터에 함께 종속된다.</div>
+- **Hierarchical** — 병합/분할의 dendrogram. 거리와 linkage 선택이 핵심.
+- **DBSCAN** — 밀도 기반, noise 허용. $\epsilon$과 min samples에 민감.
+- **HDBSCAN** — 여러 밀도 수준의 안정적 군집을 찾고 noise를 분리.
+
+
+> **논문 읽기**
+> BERTopic은 기본적으로 UMAP으로 축소한 표현에 HDBSCAN을 적용한다. 군집 결과는 두 알고리즘의 하이퍼파라미터에 함께 종속된다.
+
 
 ---
 
@@ -151,7 +169,10 @@ $$\min_{C_1,\dots,C_K}\sum_{k=1}^{K}\sum_{z_i\in C_k}\|z_i-\mu_k\|_2^2$$
 | 안정성 | seed/bootstrap overlap | 데이터·초기화 변화에 결과가 유지되는가 |
 | 사람 평가 | coherence, usefulness | 사람이 해석·활용 가능한가 |
 
-<div class="warning">silhouette가 높아도 실제 주제와 무관한 길이·언어·문체로 분리됐을 수 있다. 군집별 대표/경계/이상 문서를 읽는다.</div>
+
+> **주의**
+> silhouette가 높아도 실제 주제와 무관한 길이·언어·문체로 분리됐을 수 있다. 군집별 대표/경계/이상 문서를 읽는다.
+
 
 ---
 
@@ -177,23 +198,37 @@ $$\max_{\|w\|=1}\operatorname{Var}(Xw)$$
 | 새 데이터 transform | 구현/설정 의존 | 일반적으로 지원 |
 | 민감도 | perplexity, seed | neighbors, min_dist, metric, seed |
 
-<div class="warning"><b>과해석 금지:</b> 점 사이 빈 공간의 크기, 군집 면적, 축 방향을 원래 의미 거리로 직접 읽지 않는다.</div>
+
+> **주의**
+> **과해석 금지:** 점 사이 빈 공간의 크기, 군집 면적, 축 방향을 원래 의미 거리로 직접 읽지 않는다.
+
 
 ---
 
 # BERTopic 파이프라인
 
-<div class="pipeline">
-<div>문서<br>embedding</div><span>→</span>
-<div>UMAP<br>축소</div><span>→</span>
-<div>HDBSCAN<br>군집</div><span>→</span>
-<div>c-TF–IDF<br>대표어</div><span>→</span>
-<div>topic<br>label</div>
-</div>
 
-<div class="definition"><b>c-TF–IDF</b>: 한 군집의 문서들을 하나의 “클래스 문서”로 합쳐, 그 군집에 특이적인 단어를 높게 만드는 표현.</div>
+**문서 embedding** → **UMAP 축소** → **HDBSCAN 군집** → **c-TF–IDF 대표어** → **topic label**
+
+
+> **정의**
+> **c-TF–IDF**: 한 군집의 문서들을 하나의 “클래스 문서”로 합쳐, 그 군집에 특이적인 단어를 높게 만드는 표현.
+
 
 토픽 번호는 의미가 없으며, `-1`은 보통 noise/outlier다.
+
+---
+
+# 논문 도판: 품질뿐 아니라 계산비용도 비교한다
+
+![w:820](assets/papers/bertopic-figure1.webp)
+
+*그림: Trump 데이터에서 vocabulary 크기를 늘리며 측정한 topic model별 wall time. 오른쪽은 큰 CTM 값을 제외해 나머지 차이를 확대한다.*
+
+> **교재 연결**
+> Chapter 5의 embedding → UMAP → HDBSCAN → c-TF–IDF 파이프라인은 모듈별 품질뿐 아니라 **데이터 크기에 따른 실행시간**도 함께 평가해야 한다.
+
+*출처: Grootendorst (2022), “BERTopic,” Figure 1 · [원 논문](https://arxiv.org/abs/2203.05794)*
 
 ---
 
@@ -201,7 +236,7 @@ $$\max_{\|w\|=1}\operatorname{Var}(Xw)$$
 
 # Hands-On LLM 연결
 
-## 4장 분류 + 5장 토픽 모델링을<br>하나의 분석 설계로 묶는다
+## 4장 분류 + 5장 토픽 모델링을 하나의 분석 설계로 묶는다
 
 ---
 
@@ -214,7 +249,10 @@ $$\max_{\|w\|=1}\operatorname{Var}(Xw)$$
 | zero-shot classifier | 불필요 | label/prompt 민감 |
 | generative classification | 예시/지시 | 유연하지만 출력 파싱·비용 문제 |
 
-<div class="hllm"><b>강의 포인트:</b> 같은 test split과 macro-F1/confusion matrix로 비교해야 전략의 trade-off가 보인다.</div>
+
+> **교재 연결**
+> **강의 포인트:** 같은 test split과 macro-F1/confusion matrix로 비교해야 전략의 trade-off가 보인다.
+
 
 ---
 
@@ -246,7 +284,10 @@ pred = clf.predict(Z_test)
 5. 기존 분류 label·시간·출처와의 관계
 6. 사람이 붙인 topic name의 근거
 
-<div class="warning">LLM이 생성한 토픽 이름은 군집의 “정답”이 아니라 요약 가설이다. 대표 문서 인용과 반례를 함께 제시한다.</div>
+
+> **주의**
+> LLM이 생성한 토픽 이름은 군집의 “정답”이 아니라 요약 가설이다. 대표 문서 인용과 반례를 함께 제시한다.
+
 
 ---
 
@@ -262,7 +303,10 @@ pred = clf.predict(Z_test)
 | 수정 가설 | chunk 변경, hard negative, metadata |
 | 재실험 | 어떤 지표로 확인할까 |
 
-<div class="lab">오류 20개를 “모델이 틀림”이 아닌 원인 category로 코딩하고 빈도를 집계한다.</div>
+
+> **실습**
+> 오류 20개를 “모델이 틀림”이 아닌 원인 category로 코딩하고 빈도를 집계한다.
+
 
 ---
 
@@ -287,11 +331,16 @@ pred = clf.predict(Z_test)
 
 MTEB/MMTEB는 retrieval만이 아니라 classification, clustering, STS 등 다양한 과업을 분리 평가한다.
 
-<div class="trend">큰 모델이 모든 과업을 지배하지 않는다. 표현을 선택할 때 “범용 평균 점수”보다 실제 분석 과업·언어·길이·비용을 먼저 고정한다.</div>
+
+> **최신 동향**
+> 큰 모델이 모든 과업을 지배하지 않는다. 표현을 선택할 때 “범용 평균 점수”보다 실제 분석 과업·언어·길이·비용을 먼저 고정한다.
+
 
 2025 MMTEB는 500개가 넘는 품질관리 과업과 250개가 넘는 언어로 평가 범위를 확장했다.
 
-<div class="source">Muennighoff et al. (2023), <a href="https://aclanthology.org/2023.eacl-main.148/">MTEB</a> · Lee et al. (2025), <a href="https://arxiv.org/abs/2502.13595">MMTEB</a></div>
+
+*출처: Muennighoff et al. (2023), [MTEB](https://aclanthology.org/2023.eacl-main.148/) · Lee et al. (2025), [MMTEB](https://arxiv.org/abs/2502.13595)*
+
 
 ---
 
@@ -306,7 +355,10 @@ MTEB/MMTEB는 retrieval만이 아니라 classification, clustering, STS 등 다�
 
 그 다음 원래 $d$차원에서 k-NN overlap, silhouette, 분류 macro-F1을 계산한다.
 
-<div class="lab"><b>보고:</b> 2D에서 보이는 군집 중 원공간/label/seed 변화에도 유지되는 것과 사라지는 것을 구분한다.</div>
+
+> **실습**
+> **보고:** 2D에서 보이는 군집 중 원공간/label/seed 변화에도 유지되는 것과 사라지는 것을 구분한다.
+
 
 ---
 
@@ -318,7 +370,10 @@ MTEB/MMTEB는 retrieval만이 아니라 classification, clustering, STS 등 다�
 4. 2D 축 사이 거리를 원래 의미 거리로 읽으면 안 되는 이유는?
 5. 같은 문서의 chunk가 train/test에 섞이면 왜 누수인가?
 
-<div class="hllm"><b>Notebook:</b> `../notebooks/week06.ipynb` · 분류 지표와 시각화 seed를 함께 기록한다.</div>
+
+> **교재 연결**
+> **Notebook:** `../notebooks/week06.ipynb` · 분류 지표와 시각화 seed를 함께 기록한다.
+
 
 ---
 
@@ -330,7 +385,8 @@ MTEB/MMTEB는 retrieval만이 아니라 classification, clustering, STS 등 다�
 - 차원축소 그림은 가설 생성용이고 원공간 지표로 검증해야 한다.
 - BERTopic은 embedding–UMAP–HDBSCAN–c-TF–IDF의 연쇄 파이프라인이다.
 
-<p class="takeaway">다음 주: “좋다”를<br><mark>재현 가능한 평가표</mark>로 바꾼다.</p>
+> **핵심**
+> 다음 주: “좋다”를 **재현 가능한 평가표**로 바꾼다.
 
 ---
 

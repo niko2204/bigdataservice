@@ -11,9 +11,9 @@ title: "10주차 · 종합 프로젝트와 기술 동향"
 
 <!-- _class: lead -->
 
-<p class="kicker">WEEK 10 · CAPSTONE & TRENDS</p>
+###### WEEK 10 · CAPSTONE & TRENDS
 
-# 좋은 임베딩 실험을<br>좋은 데이터 서비스로
+# 좋은 임베딩 실험을 좋은 데이터 서비스로
 
 **요구사항 → baseline → model → index → evaluation → deployment**
 
@@ -21,7 +21,8 @@ title: "10주차 · 종합 프로젝트와 기술 동향"
 
 # 종합 프로젝트의 중심 주장
 
-<p class="takeaway">최신 모델을 쓴 프로젝트보다<br><mark>의사결정의 근거가 추적되는 프로젝트</mark>가 강하다.</p>
+> **핵심**
+> 최신 모델을 쓴 프로젝트보다 **의사결정의 근거가 추적되는 프로젝트**가 강하다.
 
 - 왜 이 표현을 선택했는가?
 - 어떤 baseline보다 얼마나 나아졌는가?
@@ -51,15 +52,18 @@ title: "10주차 · 종합 프로젝트와 기술 동향"
 | 오류비용 | FP와 FN 중 무엇이 더 위험한가? |
 | 제약 | p95 latency, RAM, 비용, 라이선스, 개인정보 |
 
-<div class="definition">“AI로 문서를 검색한다”는 문제 정의가 아니다. 사용자 행동과 성공 지표까지 써야 한다.</div>
+
+> **정의**
+> “AI로 문서를 검색한다”는 문제 정의가 아니다. 사용자 행동과 성공 지표까지 써야 한다.
+
 
 ---
 
 # End-to-end 참조 구조
 
-<div class="pipeline">
-<div>Source<br>versioned</div><span>→</span><div>Parse &<br>chunk</div><span>→</span><div>Embed &<br>index</div><span>→</span><div>Retrieve &<br>rerank</div><span>→</span><div>UI / API<br>feedback</div>
-</div>
+
+**Source versioned** → **Parse & chunk** → **Embed & index** → **Retrieve & rerank** → **UI / API feedback**
+
 
 횡단 관심사:
 
@@ -71,14 +75,16 @@ title: "10주차 · 종합 프로젝트와 기술 동향"
 
 # 기준선 사다리
 
-<div class="four">
-<div class="card"><h3>0</h3><p>규칙/빈도/무작위</p></div>
-<div class="card"><h3>1</h3><p>TF–IDF/BM25 + 고전 ML</p></div>
-<div class="card"><h3>2</h3><p>off-the-shelf embedding</p></div>
-<div class="card"><h3>3</h3><p>hybrid/rerank/fine-tune</p></div>
-</div>
 
-<div class="paper-note">각 단계가 이전 단계를 얼마나 개선하고 어떤 비용을 추가했는지 표로 남긴다. 복잡한 모델이 기준선을 못 이기면 데이터·과업 정의부터 점검한다.</div>
+- **0** — 규칙/빈도/무작위
+- **1** — TF–IDF/BM25 + 고전 ML
+- **2** — off-the-shelf embedding
+- **3** — hybrid/rerank/fine-tune
+
+
+> **논문 읽기**
+> 각 단계가 이전 단계를 얼마나 개선하고 어떤 비용을 추가했는지 표로 남긴다. 복잡한 모델이 기준선을 못 이기면 데이터·과업 정의부터 점검한다.
+
 
 ---
 
@@ -105,7 +111,10 @@ title: "10주차 · 종합 프로젝트와 기술 동향"
 6. 문서/시간 단위 split으로 누수를 막는다.
 7. test set을 잠그고 version을 부여한다.
 
-<div class="warning">공개 benchmark를 재현하는 것과 제품을 평가하는 것은 별도 목표다. 둘을 함께 보고하면 transfer gap을 설명할 수 있다.</div>
+
+> **주의**
+> 공개 benchmark를 재현하는 것과 제품을 평가하는 것은 별도 목표다. 둘을 함께 보고하면 transfer gap을 설명할 수 있다.
+
 
 ---
 
@@ -119,15 +128,18 @@ title: "10주차 · 종합 프로젝트와 기술 동향"
 | reranker | off/on | candidates top-k |
 | prompt | instruction A/B | evidence/model/decoding |
 
-<div class="definition"><b>Ablation study</b>: 시스템 구성요소 하나를 제거·변경해 성능 변화로 그 기여를 추정하는 통제 실험.</div>
+
+> **정의**
+> **Ablation study**: 시스템 구성요소 하나를 제거·변경해 성능 변화로 그 기여를 추정하는 통제 실험.
+
 
 ---
 
 # 오류 분석은 다음 실험을 만든다
 
-<div class="pipeline">
-<div>실패 수집</div><span>→</span><div>원인 coding</div><span>→</span><div>빈도·피해</div><span>→</span><div>수정 가설</div><span>→</span><div>재평가</div>
-</div>
+
+**실패 수집** → **원인 coding** → **빈도·피해** → **수정 가설** → **재평가**
+
 
 권장 오류 taxonomy:
 
@@ -157,12 +169,14 @@ project/
 
 # 데이터 카드와 모델 카드
 
-<div class="cols">
-<div class="card"><h3>Data card</h3><p>출처·수집·동의·필터·언어·결측·split·known bias·허용 용도.</p></div>
-<div class="card"><h3>Model/System card</h3><p>학습목표·입출력·metric·slice·비용·한계·금지 용도·monitoring.</p></div>
-</div>
 
-<div class="warning">카드는 홍보 문서가 아니라 다음 사용자가 오용하지 않게 하는 운영 인터페이스다.</div>
+- **Data card** — 출처·수집·동의·필터·언어·결측·split·known bias·허용 용도.
+- **Model/System card** — 학습목표·입출력·metric·slice·비용·한계·금지 용도·monitoring.
+
+
+> **주의**
+> 카드는 홍보 문서가 아니라 다음 사용자가 오용하지 않게 하는 운영 인터페이스다.
+
 
 ---
 
@@ -193,7 +207,10 @@ embedding_model_revision + tokenizer + pooling + normalize
 | generation | — | tokens/s | GPU/API |
 | end-to-end | — | req/s | 전체 |
 
-<div class="trend">성능 최적화 순서: 측정 → 병목 식별 → batch/cache/차원/index 조정 → 품질 회귀 테스트. 품질을 모른 채 latency만 줄이지 않는다.</div>
+
+> **최신 동향**
+> 성능 최적화 순서: 측정 → 병목 식별 → batch/cache/차원/index 조정 → 품질 회귀 테스트. 품질을 모른 채 latency만 줄이지 않는다.
+
 
 ---
 
@@ -207,19 +224,37 @@ embedding_model_revision + tokenizer + pooling + normalize
 | 2023–2024 | MTEB, BGE-M3, ColPali | 통합 평가, hybrid/multi-vector, 시각 문서 |
 | 2025–2026 | Qwen3/Jina/Gemini 계열 | instruction, 다국어, omni-modal, 유연한 표현 |
 
-<div class="paper-note">연도표는 “이전 기술이 사라졌다”는 뜻이 아니다. 새 표현은 비용·데이터·평가 문제를 추가한다.</div>
+
+> **논문 읽기**
+> 연도표는 “이전 기술이 사라졌다”는 뜻이 아니다. 새 표현은 비용·데이터·평가 문제를 추가한다.
+
 
 ---
 
 # 최신 기술 동향 ① 통합
 
-<div class="three">
-<div class="card"><h3>Task integration</h3><p>embedding + reranking + generation을 instruction으로 통합.</p></div>
-<div class="card"><h3>Representation integration</h3><p>dense + sparse + multi-vector를 한 backbone에서.</p></div>
-<div class="card"><h3>Modality integration</h3><p>text + image + audio + video를 공동 공간에.</p></div>
-</div>
 
-<div class="trend">통합 모델은 운영 단순화를 약속하지만, 각 mode의 최적 prompt·adapter·index·metric을 여전히 따로 검증해야 한다.</div>
+- **Task integration** — embedding + reranking + generation을 instruction으로 통합.
+- **Representation integration** — dense + sparse + multi-vector를 한 backbone에서.
+- **Modality integration** — text + image + audio + video를 공동 공간에.
+
+
+> **최신 동향**
+> 통합 모델은 운영 단순화를 약속하지만, 각 mode의 최적 prompt·adapter·index·metric을 여전히 따로 검증해야 한다.
+
+
+---
+
+# 논문 도판: embedding과 reranking의 역할은 다르다
+
+![w:1020](assets/papers/qwen3-embedding-figure1.webp)
+
+*그림: Qwen3-Embedding은 입력별 독립 벡터를, Qwen3-Reranker는 query–document를 함께 본 relevance score를 출력한다.*
+
+> **교재 연결**
+> Chapter 8의 1차 검색과 reranking, Chapter 10의 embedding 학습을 한 시스템으로 묶되 **후보 recall과 재정렬 품질을 분리 평가**한다.
+
+*출처: Zhang et al. (2025), “Qwen3 Embedding,” Figure 1 · [원 논문](https://arxiv.org/abs/2506.05176)*
 
 ---
 
@@ -232,7 +267,9 @@ embedding_model_revision + tokenizer + pooling + normalize
 - synthetic query/negative로 데이터 효율 개선
 - long-document encoding과 adaptive chunking
 
-<div class="source"><a href="https://arxiv.org/abs/2205.13147">Matryoshka Representation Learning</a> · <a href="https://arxiv.org/abs/2402.03216">BGE-M3</a> · <a href="https://arxiv.org/abs/2506.05176">Qwen3 Embedding</a></div>
+
+*출처: [Matryoshka Representation Learning](https://arxiv.org/abs/2205.13147) · [BGE-M3](https://arxiv.org/abs/2402.03216) · [Qwen3 Embedding](https://arxiv.org/abs/2506.05176)*
+
 
 ---
 
@@ -246,7 +283,10 @@ MTEB → MMTEB의 흐름은 “평균 점수”가 아니라 평가 범위를 �
 - 모델 크기·공개성·비용 비교
 - contamination과 데이터 품질 점검
 
-<div class="warning">2026 preprint의 주장과 leaderboard 순위는 변할 수 있다. 학기 시작일에 버전·날짜를 표시하고 자체 frozen test를 우선한다.</div>
+
+> **주의**
+> 2026 preprint의 주장과 leaderboard 순위는 변할 수 있다. 학기 시작일에 버전·날짜를 표시하고 자체 frozen test를 우선한다.
+
 
 ---
 
@@ -267,7 +307,7 @@ MTEB → MMTEB의 흐름은 “평균 점수”가 아니라 평가 범위를 �
 
 # Hands-On LLM 종합 연결
 
-## 2·3·4·5·8·9·10장의 예제를<br>하나의 증거 사슬로
+## 2·3·4·5·8·9·10장의 예제를 하나의 증거 사슬로
 
 ---
 
@@ -281,7 +321,10 @@ MTEB → MMTEB의 흐름은 “평균 점수”가 아니라 평가 범위를 �
 | 멀티모달 | Ch.9 | OCR/text와 image representation 중 무엇을 보존? |
 | 파인튜닝 | Ch.10 | data–loss–evaluator가 같은 relevance를 정의하나? |
 
-<div class="hllm"><b>원칙:</b> 책 코드를 그대로 실행한 화면은 산출물이 아니다. 우리 데이터, baseline, metric, failure case를 추가해야 한다.</div>
+
+> **교재 연결**
+> **원칙:** 책 코드를 그대로 실행한 화면은 산출물이 아니다. 우리 데이터, baseline, metric, failure case를 추가해야 한다.
+
 
 ---
 
@@ -324,18 +367,26 @@ MTEB → MMTEB의 흐름은 “평균 점수”가 아니라 평가 범위를 �
 | 5:45–7:15 | 실제 데모와 근거 추적 |
 | 7:15–8:00 | 한계·안전·다음 실험 |
 
-<div class="lab">모델 이름보다 선택 근거와 실패 분석에 더 많은 시간을 배분한다.</div>
+
+> **실습**
+> 모델 이름보다 선택 근거와 실패 분석에 더 많은 시간을 배분한다.
+
 
 ---
 
 # 제출 전 체크리스트
 
-<div class="cols">
-<div class="card"><h3>재현</h3><ul><li>빈 환경에서 실행</li><li>seed/revision/config</li><li>data 경로와 license</li><li>결과 자동 생성</li></ul></div>
-<div class="card"><h3>증거</h3><ul><li>baseline 동일 조건</li><li>test 미사용 tuning</li><li>오류 원문·ID</li><li>비용·안전 포함</li></ul></div>
-</div>
+| 재현 | 증거 |
+|---|---|
+| 빈 환경에서 처음부터 실행 | baseline을 같은 조건으로 비교 |
+| seed·revision·config 고정 | test를 tuning에 사용하지 않음 |
+| data 경로와 license 기록 | 오류 원문과 문서 ID 보존 |
+| 결과표 자동 생성 | 품질·비용·안전을 함께 보고 |
 
-<div class="warning">Notebook 출력만 있고 실행 순서·환경·데이터 출처가 없으면 재현 가능한 제출로 보지 않는다.</div>
+
+> **주의**
+> Notebook 출력만 있고 실행 순서·환경·데이터 출처가 없으면 재현 가능한 제출로 보지 않는다.
+
 
 ---
 
@@ -348,7 +399,8 @@ MTEB → MMTEB의 흐름은 “평균 점수”가 아니라 평가 범위를 �
 5. 검색은 chunk–representation–index–rerank의 시스템이다.
 6. 최신 모델도 baseline·자체 데이터·비용 평가를 대체하지 않는다.
 
-<p class="takeaway"><mark>좋은 임베딩</mark>이란<br>우리의 의사결정을 더 정확하고 책임 있게 만드는 표현이다.</p>
+> **핵심**
+> **좋은 임베딩**이란 우리의 의사결정을 더 정확하고 책임 있게 만드는 표현이다.
 
 ---
 
