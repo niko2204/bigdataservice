@@ -11,9 +11,9 @@ title: "03주차 · 단어 임베딩"
 
 <!-- _class: lead -->
 
-<p class="kicker">WEEK 03 · WORD EMBEDDINGS</p>
+###### WEEK 03 · WORD EMBEDDINGS
 
-# 단어의 의미를<br>분포에서 학습하기
+# 단어의 의미를 분포에서 학습하기
 
 **공기행렬 → PMI/SVD → Word2Vec → GloVe → fastText**
 
@@ -23,12 +23,14 @@ title: "03주차 · 단어 임베딩"
 
 > 비슷한 문맥에 등장하는 단어는 비슷한 의미·기능을 갖는 경향이 있다.
 
-<div class="cols">
-<div class="card"><h3>관측</h3><p>“학생이 ___을 신청했다”의 빈칸에 장학금·수강·기숙사가 반복된다.</p></div>
-<div class="card"><h3>학습</h3><p>주변 단어를 예측하거나 공기 통계를 압축해 가까운 벡터를 만든다.</p></div>
-</div>
 
-<div class="warning">분포는 의미 전체가 아니다. 사실성, 논리, 인과, 가치 판단을 자동으로 보장하지 않는다.</div>
+- **관측** — “학생이 ___을 신청했다”의 빈칸에 장학금·수강·기숙사가 반복된다.
+- **학습** — 주변 단어를 예측하거나 공기 통계를 압축해 가까운 벡터를 만든다.
+
+
+> **주의**
+> 분포는 의미 전체가 아니다. 사실성, 논리, 인과, 가치 판단을 자동으로 보장하지 않는다.
+
 
 ---
 
@@ -78,41 +80,29 @@ $$\operatorname{PPMI}(w,c)=\max(\operatorname{PMI}(w,c),0)$$
 
 $$X\approx U_k\Sigma_kV_k^\top$$
 
-<div class="cols">
-<div>
 
 - $X$: 단어–문맥 또는 문서–단어 행렬
 - $k$: 남길 잠재 차원
 - $U_k\Sigma_k$: 단어/문서의 밀집 표현
+- **직관** — 함께 변하는 많은 단어 축을 소수의 잠재 방향으로 압축한다. 잡음 완화와 동의어 연결이 가능하지만 선형 구조라는 한계가 있다.
 
-</div>
-<div class="card">
-<h3>직관</h3>
-<p>함께 변하는 많은 단어 축을 소수의 잠재 방향으로 압축한다.</p>
-<p>잡음 완화와 동의어 연결이 가능하지만 선형 구조라는 한계가 있다.</p>
-</div>
-</div>
 
-<div class="paper-note">신경망 임베딩 이전에도 “분포 통계 + 저차원 압축”은 강력한 표현학습이었다.</div>
+> **논문 읽기**
+> 신경망 임베딩 이전에도 “분포 통계 + 저차원 압축”은 강력한 표현학습이었다.
+
 
 ---
 
 # Word2Vec의 두 과제
 
-<div class="cols">
-<div class="card">
-<h3>CBOW</h3>
-<p>주변 단어들 → 중심 단어 예측</p>
-<p>`학생이 [MASK] 신청했다` → `장학금을`</p>
-</div>
-<div class="card">
-<h3>Skip-gram</h3>
-<p>중심 단어 → 주변 단어 예측</p>
-<p>`장학금` → `학생`, `신청`, `지급`</p>
-</div>
-</div>
 
-<div class="definition"><b>정적 단어 임베딩</b>: 어휘 항목마다 하나의 벡터를 저장한다. “배를 먹다”와 “배를 타다”의 `배`가 같은 벡터라는 구조적 한계가 있다.</div>
+- **CBOW** — 주변 단어들 → 중심 단어 예측 `학생이 [MASK] 신청했다` → `장학금을`
+- **Skip-gram** — 중심 단어 → 주변 단어 예측 `장학금` → `학생`, `신청`, `지급`
+
+
+> **정의**
+> **정적 단어 임베딩**: 어휘 항목마다 하나의 벡터를 저장한다. “배를 먹다”와 “배를 타다”의 `배`가 같은 벡터라는 구조적 한계가 있다.
+
 
 ---
 
@@ -140,26 +130,23 @@ $$\log\sigma(\mathbf v_c'^\top\mathbf v_w)+\sum_{i=1}^{k}\log\sigma(-\mathbf v_{
 - 음성 분포와 $k$가 학습 결과에 영향을 준다.
 - 자주 등장하는 단어를 subsampling해 계산량과 편향을 줄인다.
 
-<div class="source">Mikolov et al. (2013), “Distributed Representations of Words and Phrases…” · <a href="https://arxiv.org/abs/1310.4546">arXiv:1310.4546</a></div>
+
+*출처: Mikolov et al. (2013), “Distributed Representations of Words and Phrases…” · [arXiv:1310.4546](https://arxiv.org/abs/1310.4546)*
+
 
 ---
 
 # 논문 핵심 그림을 다시 읽는 법
 
-<div class="cols">
-<div class="card">
-<h3>CBOW</h3>
-<div class="pipeline"><div>문맥 $w_{t-c:t+c}$</div><span>→</span><div>평균/합</div><span>→</span><div>중심 $w_t$</div></div>
-</div>
-<div class="card">
-<h3>Skip-gram</h3>
-<div class="pipeline"><div>중심 $w_t$</div><span>→</span><div>투영</div><span>→</span><div>주변 단어들</div></div>
-</div>
-</div>
+![w:780](assets/papers/word2vec-figure1.webp)
 
-<div class="paper-note"><b>도판 해설:</b> 은닉층의 비선형성을 제거한 얕은 예측 모델이라 대규모 말뭉치에서 빠르게 학습된다. 화살표 방향이 “무엇으로 무엇을 예측하는가”를 뜻한다.</div>
+*그림: CBOW는 주변 문맥으로 중심 단어를, Skip-gram은 중심 단어로 주변 단어를 예측한다.*
 
-<div class="source">Mikolov et al. (2013), “Efficient Estimation of Word Representations in Vector Space,” Fig. 1 · <a href="https://arxiv.org/abs/1301.3781">원 논문</a></div>
+> **교재 연결**
+> Chapter 2의 **Word Embeddings Beyond LLMs** 예제는 이 예측 과제로 학습된 벡터를 내려받아 유사도와 추천에 사용한다. 화살표 방향은 곧 학습 데이터의 입력–정답 정의다.
+
+*출처: Mikolov et al. (2013), “Efficient Estimation of Word Representations in Vector Space,” Figure 1 · [원 논문](https://arxiv.org/abs/1301.3781)*
+
 
 ---
 
@@ -171,9 +158,13 @@ $$J=\sum_{i,j}f(X_{ij})\left(\mathbf w_i^\top\tilde{\mathbf w}_j+b_i+\tilde b_j-
 - $f$: 지나치게 희귀/빈번한 쌍의 영향 제어
 - Word2Vec의 국소 예측과 달리 **전역 행렬 통계**를 명시적으로 사용
 
-<div class="definition">둘은 구현은 다르지만 “분포에서 단어 관계를 저차원 기하로 압축한다”는 목표를 공유한다.</div>
 
-<div class="source">Pennington et al. (2014), “GloVe.” · <a href="https://aclanthology.org/D14-1162/">ACL Anthology</a></div>
+> **정의**
+> 둘은 구현은 다르지만 “분포에서 단어 관계를 저차원 기하로 압축한다”는 목표를 공유한다.
+
+
+*출처: Pennington et al. (2014), “GloVe.” · [ACL Anthology](https://aclanthology.org/D14-1162/)*
+
 
 ---
 
@@ -187,7 +178,10 @@ $$\mathbf v_{word}=\sum_{g\in\mathcal G(word)}\mathbf z_g$$
 - 활용·철자 변이가 많은 언어와 희귀어에 유리할 수 있음
 - 비슷한 철자지만 다른 의미인 단어가 과도하게 가까워질 수 있음
 
-<div class="paper-note">한국어에서 형태·문자 정보의 이점은 corpus와 tokenizer에 따라 다르므로 intrinsic + downstream 평가가 필요하다.</div>
+
+> **논문 읽기**
+> 한국어에서 형태·문자 정보의 이점은 corpus와 tokenizer에 따라 다르므로 intrinsic + downstream 평가가 필요하다.
+
 
 ---
 
@@ -218,7 +212,10 @@ $$\mathbf v(king)-\mathbf v(man)+\mathbf v(woman)\approx\mathbf v(queen)$$
 - bias “제거”는 과업 성능과 다른 집단의 관계를 바꿀 수 있다.
 - 정적 벡터의 유사도만으로 사람·집단을 분류하는 것은 위험하다.
 
-<div class="warning"><b>평가 원칙:</b> 전체 평균뿐 아니라 집단별 false positive/negative, 사용 맥락, 피해의 비대칭을 기록한다.</div>
+
+> **주의**
+> **평가 원칙:** 전체 평균뿐 아니라 집단별 false positive/negative, 사용 맥락, 피해의 비대칭을 기록한다.
+
 
 ---
 
@@ -226,7 +223,7 @@ $$\mathbf v(king)-\mathbf v(man)+\mathbf v(woman)\approx\mathbf v(queen)$$
 
 # Hands-On LLM 연결
 
-## Gensim 결과를<br>추천 시스템의 증거로 바꾸기
+## Gensim 결과를 추천 시스템의 증거로 바꾸기
 
 ---
 
@@ -271,7 +268,10 @@ def mean_embed(tokens, kv):
 - 단어 중요도: 모든 토큰 동일 가중치
 - 다의성: 문맥과 무관한 하나의 단어 벡터
 
-<div class="lab"><b>개선:</b> TF–IDF 가중 평균, SIF, 문장 Transformer와 비교하고 동일 test query로 평가한다.</div>
+
+> **실습**
+> **개선:** TF–IDF 가중 평균, SIF, 문장 Transformer와 비교하고 동일 test query로 평가한다.
+
 
 ---
 
@@ -284,7 +284,10 @@ def mean_embed(tokens, kv):
 | 결과 | 이웃 5개 관찰 | 정답/선호 라벨로 Recall@k |
 | 해석 | “비슷하다” | 장르·아티스트 편향, 다양성 분석 |
 
-<div class="hllm"><b>Hands-On LLM의 가치:</b> 한 줄의 `most_similar`가 끝이 아니라, 표현 선택이 추천 결과에 어떻게 전파되는지 관찰하는 출발점이다.</div>
+
+> **교재 연결**
+> **Hands-On LLM의 가치:** 한 줄의 `most_similar`가 끝이 아니라, 표현 선택이 추천 결과에 어떻게 전파되는지 관찰하는 출발점이다.
+
 
 ---
 
@@ -297,7 +300,10 @@ def mean_embed(tokens, kv):
 - 작은 도메인 corpus에 빠르게 적응하는 기준선
 - 형태 정보가 중요한 희귀어 처리
 
-<div class="trend"><b>현재 위치:</b> 범용 semantic search의 중심은 문맥적 문장 임베딩으로 이동했지만, 정적 벡터는 비용–해석성 기준선이자 구성요소다.</div>
+
+> **최신 동향**
+> **현재 위치:** 범용 semantic search의 중심은 문맥적 문장 임베딩으로 이동했지만, 정적 벡터는 비용–해석성 기준선이자 구성요소다.
+
 
 ---
 
@@ -308,7 +314,10 @@ def mean_embed(tokens, kv):
 3. 두 모델의 이웃 overlap@10을 계산한다.
 4. downstream 문서 분류/검색 중 하나로 성능을 비교한다.
 
-<div class="lab"><b>결론 형식:</b> “큰 window는 ___ 관계를 강화했고, 이 변화가 ___ 과업에서 지표를 ___만큼 변화시켰다.”</div>
+
+> **실습**
+> **결론 형식:** “큰 window는 ___ 관계를 강화했고, 이 변화가 ___ 과업에서 지표를 ___만큼 변화시켰다.”
+
 
 ---
 
@@ -320,7 +329,10 @@ def mean_embed(tokens, kv):
 4. negative sampling에서 false negative가 생기면 어떤 방향으로 학습되는가?
 5. 평균 단어 벡터 문서 표현의 구조적 한계 두 가지는?
 
-<div class="hllm"><b>Notebook:</b> `../notebooks/week03.ipynb` · seed, corpus, 파라미터, OOV 비율을 함께 기록한다.</div>
+
+> **교재 연결**
+> **Notebook:** `../notebooks/week03.ipynb` · seed, corpus, 파라미터, OOV 비율을 함께 기록한다.
+
 
 ---
 
@@ -332,7 +344,8 @@ def mean_embed(tokens, kv):
 - 정적 벡터는 빠르고 유용하지만 다의성·어순·부정·편향에 구조적 한계가 있다.
 - 하이퍼파라미터가 “의미”의 종류를 바꾸므로 downstream 평가가 필수다.
 
-<p class="takeaway">다음 주: 같은 단어가<br><mark>문맥마다 다른 벡터</mark>가 된다.</p>
+> **핵심**
+> 다음 주: 같은 단어가 **문맥마다 다른 벡터**가 된다.
 
 ---
 

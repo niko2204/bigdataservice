@@ -11,9 +11,9 @@ title: "07주차 · 임베딩 평가"
 
 <!-- _class: lead -->
 
-<p class="kicker">WEEK 07 · EVALUATION</p>
+###### WEEK 07 · EVALUATION
 
-# 임베딩의 “좋음”을<br>평가 설계로 증명하기
+# 임베딩의 “좋음”을 평가 설계로 증명하기
 
 **task → dataset → metric → baseline → uncertainty → error**
 
@@ -21,7 +21,8 @@ title: "07주차 · 임베딩 평가"
 
 # 점수 하나는 답이 아니다
 
-<p class="takeaway">평가 결과는 모델의 고유 속성이 아니라<br><mark>모델 × 데이터 × 과업 × 지표 × 시스템</mark>의 함수다.</p>
+> **핵심**
+> 평가 결과는 모델의 고유 속성이 아니라 **모델 × 데이터 × 과업 × 지표 × 시스템**의 함수다.
 
 $$R=R(M,D,T,\mu,S)$$
 
@@ -43,13 +44,15 @@ $$R=R(M,D,T,\mu,S)$$
 
 # 평가의 세 층
 
-<div class="three">
-<div class="card"><h3>Intrinsic</h3><p>유사도·analogy 등 표현 자체의 제한된 특성.</p></div>
-<div class="card"><h3>Task / Extrinsic</h3><p>분류·군집·검색 등 실제 downstream 과업.</p></div>
-<div class="card"><h3>System</h3><p>index·reranker·LLM·UI를 포함한 end-to-end 가치와 위험.</p></div>
-</div>
 
-<div class="definition">좋은 연구 질문은 “모델 A가 좋은가?”가 아니라 “조건 C에서 지표 M과 비용 K로 볼 때 A가 baseline B보다 나은가?”다.</div>
+- **Intrinsic** — 유사도·analogy 등 표현 자체의 제한된 특성.
+- **Task / Extrinsic** — 분류·군집·검색 등 실제 downstream 과업.
+- **System** — index·reranker·LLM·UI를 포함한 end-to-end 가치와 위험.
+
+
+> **정의**
+> 좋은 연구 질문은 “모델 A가 좋은가?”가 아니라 “조건 C에서 지표 M과 비용 K로 볼 때 A가 baseline B보다 나은가?”다.
+
 
 ---
 
@@ -69,40 +72,30 @@ $$\rho=1-\frac{6\sum_i d_i^2}{n(n^2-1)}$$
 
 # 분류와 군집 지표
 
-<div class="cols">
-<div>
 
 ### 분류
 
 - macro/micro/weighted F1 구분
 - 불균형에서는 per-class recall
 - calibration이 필요한 의사결정은 Brier/ECE 등 추가
-
-</div>
-<div>
-
 ### 군집
 
 - ARI/NMI/V-measure: label과 일치
 - silhouette: 내부 거리 구조
 - 안정성: seed/bootstrap/시간
 
-</div>
-</div>
 
-<div class="warning">외부 label과의 일치도가 낮다고 군집이 무조건 나쁜 것은 아니며, label이 실제 사용 목적을 반영하는지도 검증한다.</div>
+> **주의**
+> 외부 label과의 일치도가 낮다고 군집이 무조건 나쁜 것은 아니며, label이 실제 사용 목적을 반영하는지도 검증한다.
+
 
 ---
 
 # 검색 평가 데이터의 구조
 
-<div class="pipeline">
-<div>Queries<br>$Q$</div><span>+</span>
-<div>Corpus<br>$D$</div><span>+</span>
-<div>Relevance<br>qrels</div><span>→</span>
-<div>Run<br>ranked lists</div><span>→</span>
-<div>Metrics</div>
-</div>
+
+**Queries $Q$** → **Corpus $D$** → **Relevance qrels** → **Run ranked lists** → **Metrics**
+
 
 - binary qrels: relevant / not relevant
 - graded qrels: 매우 관련/부분 관련/무관
@@ -151,7 +144,10 @@ $$\operatorname{nDCG}@k=\frac{\operatorname{DCG}@k}{\operatorname{IDCG}@k}$$
 - ideal ranking으로 나눠 쿼리별 정답 수/등급 차이를 보정
 - binary qrels에도 쓸 수 있지만 graded relevance에서 특히 유용
 
-<div class="lab"><b>손계산:</b> relevance `[3,0,2]`인 top-3의 DCG와 이상적 `[3,2,0]`의 nDCG를 계산한다.</div>
+
+> **실습**
+> **손계산:** relevance `[3,0,2]`인 top-3의 DCG와 이상적 `[3,2,0]`의 nDCG를 계산한다.
+
 
 ---
 
@@ -159,16 +155,10 @@ $$\operatorname{nDCG}@k=\frac{\operatorname{DCG}@k}{\operatorname{IDCG}@k}$$
 
 두 종류의 Recall을 혼동하지 않는다.
 
-<div class="cols">
-<div class="card">
-<h3>Task Recall@k</h3>
-<p>gold relevant 문서를 찾았는가?</p>
-</div>
-<div class="card">
-<h3>ANN recall@k</h3>
-<p>exact top-k 이웃을 approximate index가 얼마나 재현했는가?</p>
-</div>
-</div>
+
+- **Task Recall@k** — gold relevant 문서를 찾았는가?
+- **ANN recall@k** — exact top-k 이웃을 approximate index가 얼마나 재현했는가?
+
 
 $$\operatorname{ANNRecall}@k=\frac{|NN_k^{approx}\cap NN_k^{exact}|}{k}$$
 
@@ -187,7 +177,22 @@ $$\operatorname{ANNRecall}@k=\frac{|NN_k^{approx}\cap NN_k^{exact}|}{k}$$
 
 핵심 결론: **모든 과업을 지배하는 단일 모델이 없었다.**
 
-<div class="source">Muennighoff et al. (2023), “MTEB.” · <a href="https://aclanthology.org/2023.eacl-main.148/">EACL 2023</a> · <a href="https://arxiv.org/abs/2210.07316">arXiv</a></div>
+
+*출처: Muennighoff et al. (2023), “MTEB.” · [EACL 2023](https://aclanthology.org/2023.eacl-main.148/) · [arXiv](https://arxiv.org/abs/2210.07316)*
+
+
+---
+
+# 논문 도판: 하나의 평균이 여덟 과업을 숨긴다
+
+![w:830](assets/papers/mteb-figure1.webp)
+
+*그림: 원 MTEB의 8개 과업과 58개 데이터셋. 보라색은 다국어 데이터셋을 뜻한다.*
+
+> **교재 연결**
+> Chapter 10의 MTEB 실행 결과는 전체 평균만 기록하지 않고, **강의 프로젝트와 일치하는 과업·데이터셋별 점수**로 다시 해석한다.
+
+*출처: Muennighoff et al. (2023), “MTEB,” Figure 1 · [ACL Anthology](https://aclanthology.org/2023.eacl-main.148/)*
 
 ---
 
@@ -195,15 +200,17 @@ $$\operatorname{ANNRecall}@k=\frac{|NN_k^{approx}\cap NN_k^{exact}|}{k}$$
 
 2025 연구 보고 범위:
 
-<div class="three">
-<div class="card"><div class="metric">500+</div><p>품질관리 평가 과업</p></div>
-<div class="card"><div class="metric">250+</div><p>언어</p></div>
-<div class="card"><h3>다중 과업</h3><p>retrieval뿐 아니라 다양한 embedding 용도</p></div>
-</div>
+
+- **500+** — 품질관리 평가 과업
+- **250+** — 언어
+- **다중 과업** — retrieval뿐 아니라 다양한 embedding 용도
+
 
 논문에서는 560M 규모의 공개 모델이 더 큰 LLM보다 전체적으로 강한 사례도 보고했다. 크기만으로 선택할 수 없다는 증거다.
 
-<div class="source">Lee et al. (2025), “Massive Multilingual Text Embedding Benchmark.” · <a href="https://arxiv.org/abs/2502.13595">arXiv:2502.13595</a></div>
+
+*출처: Lee et al. (2025), “Massive Multilingual Text Embedding Benchmark.” · [arXiv:2502.13595](https://arxiv.org/abs/2502.13595)*
+
 
 ---
 
@@ -217,7 +224,10 @@ $$\operatorname{ANNRecall}@k=\frac{|NN_k^{approx}\cap NN_k^{exact}|}{k}$$
 6. 공개/비공개 데이터와 contamination 가능성은?
 7. 점수 차이가 변동성과 운영 비용보다 큰가?
 
-<div class="warning">전체 평균은 서로 다른 dataset scale과 중요도를 숨긴다. 먼저 목표 과업 subset과 per-dataset 결과를 본다.</div>
+
+> **주의**
+> 전체 평균은 서로 다른 dataset scale과 중요도를 숨긴다. 먼저 목표 과업 subset과 per-dataset 결과를 본다.
+
 
 ---
 
@@ -231,7 +241,10 @@ $$\operatorname{ANNRecall}@k=\frac{|NN_k^{approx}\cap NN_k^{exact}|}{k}$$
 | benchmark training | test를 학습 데이터로 | data statement, held-out private set |
 | tuning leakage | test로 prompt/alpha 선택 | validation 고정 |
 
-<div class="definition"><b>contamination</b>: 평가 항목 또는 가까운 변형이 사전학습/파인튜닝 데이터에 들어가 일반화가 아닌 기억으로 점수가 오르는 현상.</div>
+
+> **정의**
+> **contamination**: 평가 항목 또는 가까운 변형이 사전학습/파인튜닝 데이터에 들어가 일반화가 아닌 기억으로 점수가 오르는 현상.
+
 
 ---
 
@@ -262,7 +275,10 @@ delta = metric(model_a, sample_q) - metric(model_b, sample_q)
 | energy/cost | GPU-hour, API 비용, 전력 측정 |
 | 안정성 | timeout, error rate, OOM 비율 |
 
-<div class="trend"><b>Pareto frontier:</b> 다른 후보보다 품질은 낮고 비용은 높은 모델은 제거한다. 단일 가중 평균을 만들기 전에 비지배 후보를 본다.</div>
+
+> **최신 동향**
+> **Pareto frontier:** 다른 후보보다 품질은 낮고 비용은 높은 모델은 제거한다. 단일 가중 평균을 만들기 전에 비지배 후보를 본다.
+
 
 ---
 
@@ -270,7 +286,7 @@ delta = metric(model_a, sample_q) - metric(model_b, sample_q)
 
 # Hands-On LLM 연결
 
-## Chapter 10의 MTEB 평가를<br>우리 데이터셋의 실험표로 확장한다
+## Chapter 10의 MTEB 평가를 우리 데이터셋의 실험표로 확장한다
 
 ---
 
@@ -284,7 +300,10 @@ delta = metric(model_a, sample_q) - metric(model_b, sample_q)
 6. **Errors**: 최악 query 20개를 원인 분류
 7. **Uncertainty**: bootstrap interval 또는 여러 seed
 
-<div class="hllm"><b>재현성:</b> 모델 이름만 쓰지 말고 revision, prompt, normalize, dimension, library version을 결과 표에 포함한다.</div>
+
+> **교재 연결**
+> **재현성:** 모델 이름만 쓰지 말고 revision, prompt, normalize, dimension, library version을 결과 표에 포함한다.
+
 
 ---
 
@@ -297,7 +316,10 @@ delta = metric(model_a, sample_q) - metric(model_b, sample_q)
 | Model B | 1024 | — | — | — | 3.81 GiB | instruction |
 | Model B-256 | 256 | — | — | — | 0.95 GiB | Matryoshka |
 
-<div class="lab">빈칸을 Notebook 측정값으로 채우고, 서비스 제약 안에서 선택한 모델과 버린 모델의 이유를 모두 쓴다.</div>
+
+> **실습**
+> 빈칸을 Notebook 측정값으로 채우고, 서비스 제약 안에서 선택한 모델과 버린 모델의 이유를 모두 쓴다.
+
 
 ---
 
@@ -311,7 +333,10 @@ delta = metric(model_a, sample_q) - metric(model_b, sample_q)
 - 비용과 라이선스는?
 - 재현 가능한 config가 공개됐는가?
 
-<div class="lab"><b>결과물:</b> 모델 구매/도입 심의용 1페이지 평가 체크리스트.</div>
+
+> **실습**
+> **결과물:** 모델 구매/도입 심의용 1페이지 평가 체크리스트.
+
 
 ---
 
@@ -323,7 +348,10 @@ delta = metric(model_a, sample_q) - metric(model_b, sample_q)
 4. MTEB 평균 1등을 그대로 채택하면 안 되는 이유 세 가지는?
 5. group split이 필요한 데이터 예를 하나 들어라.
 
-<div class="hllm"><b>Notebook:</b> `../notebooks/week07.ipynb` · metric을 직접 계산하고 모델별 per-query 차이를 저장한다.</div>
+
+> **교재 연결**
+> **Notebook:** `../notebooks/week07.ipynb` · metric을 직접 계산하고 모델별 per-query 차이를 저장한다.
+
 
 ---
 
@@ -335,7 +363,8 @@ delta = metric(model_a, sample_q) - metric(model_b, sample_q)
 - 정확도와 함께 latency·memory·cost·stability를 측정한다.
 - 평균 차이에는 불확실성과 오류 사례를 붙여야 한다.
 
-<p class="takeaway">다음 주: 평가한 벡터를<br><mark>대규모 검색과 RAG 시스템</mark>에 배치한다.</p>
+> **핵심**
+> 다음 주: 평가한 벡터를 **대규모 검색과 RAG 시스템**에 배치한다.
 
 ---
 
