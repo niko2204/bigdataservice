@@ -11,7 +11,8 @@
 - `lectures/`: 주차별 한국어 강의노트
 - `slides/`: 용어·정의·수식·논문 도판·최신 동향을 포함한 Marp 강의 덱 10개
 - `notebooks/`: 학생이 실행하고 기록하는 Jupyter Notebook 10개
-- `assignments/`: 개인 과제 2개와 최종 프로젝트
+- `assignments/`: CMU형 명세·제출 계약·루브릭을 갖춘 개인 과제 2개와 최종 프로젝트
+- `exams/`: 이론 중심 중간·기말고사와 교수자용 모범답안·부분점수 기준
 - `INSTRUCTOR_GUIDE.md`: 교수자 운영·시연·구술평가 가이드
 - `ASSESSMENT_RUBRIC.md`: 공통 채점 루브릭
 - `data/policy_documents.csv`: 작은 한국어 예제 데이터
@@ -46,6 +47,20 @@ jupyter lab courses/embedding-data-science/notebooks
 각 Notebook은 기본 실습이 API 키 없이 실행되도록 작성했습니다. Transformer, Sentence
 Transformers, CLIP 실습은 인터넷과 모델 다운로드가 필요한 선택 셀입니다. 선택 셀의
 `RUN_*` 값을 `True`로 바꾸어 실행합니다.
+
+## 과제와 시험
+
+|구분|자료|핵심 평가|
+|---|---|---|
+|공통 과제 안내|[제출 구조·협업·AI·재현성 규칙](assignments/README.md)|명세 준수와 독립 검증|
+|과제 1|[희소/밀집 검색의 통제 비교](assignments/assignment01.md)|qrels, 검색 지표, 오류 분석|
+|과제 2|[벡터 검색과 근거 기반 응답](assignments/assignment02.md)|chunk 실험, 검색/생성 오류, 거부|
+|최종 프로젝트|[임베딩 데이터 서비스](assignments/final_project.md)|기준선, ablation, 서비스 방어|
+|중간고사|[학생용 문제지](exams/midterm_exam.md)|1–5주차 정의·수식·비교|
+|기말고사|[학생용 문제지](exams/final_exam.md)|6–10주차 평가·RAG·멀티모달·재현성|
+
+교수자용 모범답안은 `exams/instructor/`에 있으므로 실제 시험 전 비공개 LMS 또는 교수자
+전용 저장소로 옮기거나 수치와 사례를 변형해야 합니다.
 
 ## 교육 원칙
 
