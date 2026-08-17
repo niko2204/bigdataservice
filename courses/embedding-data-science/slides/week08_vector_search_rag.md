@@ -390,7 +390,9 @@ answer = generator(query, reranked)
 
 
 > **교재 연결**
-> **Notebook:** `../notebooks/week08.ipynb` · exact/ANN, dense/hybrid, rerank 전후를 같은 query로 비교한다.
+> **Notebook:** `../notebooks/week08.ipynb`
+> - 필수 실습: 200/500자 chunk, TF–IDF/dense 검색, 근거 인용과 거부 비교
+> - 선택 확장: exact/ANN, hybrid, reranking
 
 
 ---

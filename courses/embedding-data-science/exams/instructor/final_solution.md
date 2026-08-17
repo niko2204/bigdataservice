@@ -42,19 +42,20 @@
 - 첫 relevant가 rank 1이므로 reciprocal rank $=1$ (2)
 
 $$
-DCG=\frac3{1}+0+\frac1{2}+0+\frac3{2.585}
+DCG=\frac{3}{1}+0+\frac{1}{2}+0+\frac{3}{2.585}
 \approx3+0.5+1.160=4.660
 $$
 
 DCG 3점.
 
-ideal relevance는 `[2,2,1,0,0]`:
+검색되지 않은 관련 문서의 relevance 1도 포함하면 ideal relevance는 `[2,2,1,1,0]`:
 
 $$
-IDCG=3+\frac3{1.585}+\frac1{2}\approx3+1.893+0.5=5.393
+IDCG=3+\frac{3}{1.585}+\frac{1}{2}+\frac{1}{2.322}
+\approx3+1.893+0.5+0.431=5.824
 $$
 
-$$nDCG\approx4.660/5.393\approx0.864$$
+$$nDCG\approx4.660/5.824\approx0.800$$
 
 IDCG 2점, nDCG 1점. 반올림 허용.
 

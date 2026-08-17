@@ -45,9 +45,11 @@ pip install -r courses/embedding-data-science/requirements.txt
 jupyter lab courses/embedding-data-science/notebooks
 ```
 
-각 Notebook은 기본 실습이 API 키 없이 실행되도록 작성했습니다. Transformer, Sentence
-Transformers, CLIP 실습은 인터넷과 모델 다운로드가 필요한 선택 셀입니다. 선택 셀의
-`RUN_*` 값을 `True`로 바꾸어 실행합니다.
+각 Notebook은 기본 실습이 API 키 없이 실행되도록 작성했습니다. Transformer와 CLIP 모델
+실습은 인터넷과 모델 다운로드가 필요한 선택 셀입니다. Sentence Transformers 셀도 주차별
+연습에서는 선택할 수 있지만, 과제 1·2의 dense 검색에서는 필수입니다. 모델 다운로드가
+어려우면 교수자가 제공한 저장 임베딩을 사용합니다. 모델 셀은 `RUN_*` 값을 `True`로 바꾸어
+실행합니다.
 
 ## 과제와 시험
 
@@ -63,9 +65,9 @@ Transformers, CLIP 실습은 인터넷과 모델 다운로드가 필요한 선�
 교수자용 모범답안은 `exams/instructor/`에 있으므로 실제 시험 전 비공개 LMS 또는 교수자
 전용 저장소로 옮기거나 수치와 사례를 변형해야 합니다.
 
-과제 1은 문서 50개·질의 10개, 과제 2는 원문 10개·질문 12개를 최소 범위로 한다. 복잡한
-nDCG, 다중 청크 조합, 복수 ablation과 성능 신뢰구간은 선택 확장 활동이며 필수 채점 범위가
-아니다.
+과제 1은 문서 50개·질의 10개, 과제 2는 원문 10개·질문 12개를 최소 범위로 한다. 과제에서
+nDCG 구현, 다중 청크 조합, 복수 ablation과 성능 신뢰구간은 선택 확장 활동이며 필수 채점
+범위가 아니다. 단, nDCG의 정의와 작은 손계산은 7주차 수업과 기말고사 이론 범위에 포함된다.
 
 ## 교육 원칙
 
