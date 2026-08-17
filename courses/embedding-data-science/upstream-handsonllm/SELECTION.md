@@ -14,6 +14,6 @@
 | Chapter 9 · Multimodal Large Language Models | 9주차 멀티모달 입력 |
 | Chapter 10 · Creating Text Embedding Models | 5·7·10주차 학습·평가·종합 |
 
-원본은 Apache License 2.0이며, 이 폴더의 `LICENSE`와 원본 README를 함께 유지합니다.
+원본은 Apache License 2.0이며, 이 폴더의 `LICENSE`와 선택·출처 기록을 함께 유지합니다.
 강의용 한국어 설명과 경량 실습은 상위 폴더의 `slides/`, `lectures/`, `notebooks/`를
 사용하세요. 원본 Notebook은 모델 다운로드와 GPU/API가 필요할 수 있습니다.
