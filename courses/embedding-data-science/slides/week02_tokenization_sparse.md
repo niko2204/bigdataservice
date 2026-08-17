@@ -41,19 +41,11 @@ title: "02주차 · 토큰화와 희소 표현"
 
 # 용어 지도: 문자열에서 ID까지
 
-<div class="pipeline">
-<div>문자열<br><b>text</b></div><span>→</span>
-<div>정규화<br><b>normalize</b></div><span>→</span>
-<div>분절<br><b>pre-tokenize</b></div><span>→</span>
-<div>서브워드<br><b>model</b></div><span>→</span>
-<div>정수 ID<br><b>encode</b></div>
-</div>
+문자열 (text) → 정규화 (normalize) → 분절 (pre-tokenize) → 서브워드 (model) → 정수 ID (encode)
 
-<div class="definition">
-<b>토큰(token)</b>: 모델이 한 위치에서 처리하는 기호 단위.<br>
-<b>어휘집(vocabulary)</b>: 토큰과 정수 ID의 유한한 대응표.<br>
-<b>OOV(out-of-vocabulary)</b>: 어휘집에 없는 입력 단위.
-</div>
+**토큰(token)**: 모델이 한 위치에서 처리하는 기호 단위.  
+**어휘집(vocabulary)**: 토큰과 정수 ID의 유한한 대응표.  
+**OOV(out-of-vocabulary)**: 어휘집에 없는 입력 단위.
 
 토큰은 언어학적 “단어”와 같지 않으며, tokenizer 버전도 모델의 일부다.
 
@@ -91,30 +83,27 @@ title: "02주차 · 토큰화와 희소 표현"
 
 # WordPiece와 Unigram
 
-<div class="cols">
-<div class="card">
-<h3>WordPiece</h3>
-<p>후보 결합이 언어모델 우도 개선에 얼마나 기여하는지 고려하는 계열. BERT tokenizer로 널리 알려짐.</p>
-<p class="small">예: `playing` → `play`, `##ing`</p>
-</div>
-<div class="card">
-<h3>Unigram LM</h3>
-<p>큰 후보 어휘에서 시작해 우도를 덜 해치는 토큰을 제거. 한 문자열에 여러 분절 후보를 확률로 비교.</p>
-<p class="small">SentencePiece에서 사용 가능</p>
-</div>
-</div>
+## WordPiece
+후보 결합이 언어모델 우도 개선에 얼마나 기여하는지 고려하는 계열. BERT tokenizer로 널리 알려짐.
 
-<div class="paper-note">이름만으로 구현을 단정하지 말고 tokenizer 설정 파일의 normalizer, pre-tokenizer, model, post-processor를 확인한다.</div>
+예: `playing` → `play`, `##ing`
+
+## Unigram LM
+큰 후보 어휘에서 시작해 우도를 덜 해치는 토큰을 제거. 한 문자열에 여러 분절 후보를 확률로 비교.
+
+SentencePiece에서 사용 가능
+
+> **참고:** 이름만으로 구현을 단정하지 말고 tokenizer 설정 파일의 normalizer, pre-tokenizer, model, post-processor를 확인한다.
 
 ---
 
 # 토큰화 품질을 어떻게 측정할까
 
-<div class="three">
-<div class="card"><h3>fertility</h3><p>단어/문장당 생성 토큰 수</p></div>
-<div class="card"><h3>coverage</h3><p>문자·도메인·언어를 손실 없이 표현하는가</p></div>
-<div class="card"><h3>downstream</h3><p>검색·분류 성능과 비용이 어떻게 변하는가</p></div>
-</div>
+| | |
+|---|---|
+| **fertility** | 단어/문장당 생성 토큰 수 |
+| **coverage** | 문자·도메인·언어를 손실 없이 표현하는가 |
+| **downstream** | 검색·분류 성능과 비용이 어떻게 변하는가 |
 
 추가 진단:
 

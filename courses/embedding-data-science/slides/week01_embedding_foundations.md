@@ -17,7 +17,7 @@ title: "01주차 · 임베딩의 언어: 표현과 공간"
 
 **표현 → 거리 → 과업 → 평가**를 하나의 논리로 연결한다
 
-이영호 · 컴퓨터학부 4학년
+이영호 · 컴퓨터학부
 
 ---
 
@@ -101,12 +101,12 @@ title: "01주차 · 임베딩의 언어: 표현과 공간"
 
 ---
 
-# 노름과 거리
+# norm과 거리
 
 <div class="cols">
 <div>
 
-### $L_2$ 노름
+### $L_2$ norm
 
 $$\|\mathbf x\|_2=\sqrt{\sum_{i=1}^{d}x_i^2}$$
 
@@ -120,6 +120,8 @@ $$d_2(\mathbf x,\mathbf y)=\|\mathbf x-\mathbf y\|_2$$
 ### 내적
 
 $$\mathbf x^\top\mathbf y=\sum_{i=1}^{d}x_iy_i$$
+
+---
 
 ### 코사인 유사도
 
@@ -136,17 +138,17 @@ $$\cos(\mathbf x,\mathbf y)=\frac{\mathbf x^\top\mathbf y}{\|\mathbf x\|_2\|\mat
 
 $\hat{\mathbf x}=\mathbf x/\|\mathbf x\|_2$, $\hat{\mathbf y}=\mathbf y/\|\mathbf y\|_2$이면
 
-<div class="equation">
+
 $\|\hat{\mathbf x}-\hat{\mathbf y}\|_2^2
 =2-2\hat{\mathbf x}^\top\hat{\mathbf y}
 =2-2\cos(\mathbf x,\mathbf y)$
-</div>
+
 
 - 단위 벡터에서는 **내적 최대화**, **코사인 최대화**, **유클리드 거리 최소화**의 순위가 같다.
 - 정규화하지 않으면 벡터의 크기가 점수에 개입한다.
 - 일부 모델은 크기에 신뢰도·빈도 정보를 담을 수 있으므로 무조건 정규화하지 않는다.
 
-<div class="lab"><b>손계산:</b> $x=(3,4)$, $y=(4,3)$의 노름, 내적, 코사인, 유클리드 거리를 계산하라.</div>
+<b>손계산:</b> $x=(3,4)$, $y=(4,3)$의 norm, 내적, 코사인, 유클리드 거리를 계산하라.</div>
 
 ---
 
@@ -162,6 +164,8 @@ $\|\hat{\mathbf x}-\hat{\mathbf y}\|_2^2
 - 검색에서 관련 문서는 문장 의미가 동일할 필요가 없다.
 - 분류에서는 같은 클래스의 점들이 가까운 것보다 **결정 경계**가 더 중요할 수 있다.
 
+---
+
 <div class="definition"><b>운영적 정의(operational definition)</b>: 추상 개념을 관측·측정 가능한 규칙으로 바꾼 정의. “좋은 임베딩”은 반드시 지표와 데이터셋으로 운영화해야 한다.</div>
 
 ---
@@ -175,18 +179,14 @@ $\|\hat{\mathbf x}-\hat{\mathbf y}\|_2^2
 - 소수의 점이 많은 쿼리의 이웃이 되는 **허브니스(hubness)**가 나타난다.
 - 시각화를 위해 2차원으로 축소하면 원래의 국소/전역 구조가 동시에 보존되지 않는다.
 
-<div class="warning">“768차원이라 더 많은 의미를 담는다”는 주장은 검증이 필요하다. 차원, 데이터 수, 학습목표, 평가 성능을 함께 본다.</div>
+> [!WARNING]
+> “768차원이라 더 많은 의미를 담는다”는 주장은 검증이 필요하다. 차원, 데이터 수, 학습목표, 평가 성능을 함께 본다.
 
 ---
 
 # 임베딩은 어떻게 학습되는가
 
-<div class="pipeline">
-<div>원시 데이터<br><b>$x$</b></div><span>→</span>
-<div>인코더<br><b>$f_\theta$</b></div><span>→</span>
-<div>벡터<br><b>$z$</b></div><span>→</span>
-<div>학습목표<br><b>$\mathcal{L}$</b></div>
-</div>
+원시 데이터 $x$ → 인코더 $f_\theta$ → 벡터 $z$ → 학습 목표 $\mathcal{L}$
 
 | 학습 신호 | 가까워지게 하는 예 | 멀어지게 하는 예 |
 |---|---|---|
@@ -201,16 +201,17 @@ $\|\hat{\mathbf x}-\hat{\mathbf y}\|_2^2
 
 한 쿼리 $q_i$와 양성 문서 $d_i^+$, 배치의 음성 문서 $d_j$가 있을 때
 
-<div class="equation">
-$\mathcal L_i=-\log\frac{\exp(s(q_i,d_i^+)/\tau)}{\sum_j\exp(s(q_i,d_j)/\tau)}$
-</div>
+$$
+\mathcal L_i=-\log\frac{\exp(s(q_i,d_i^+)/\tau)}{\sum_j\exp(s(q_i,d_j)/\tau)}
+$$
 
 - $s$: 코사인 또는 내적 점수
 - $\tau$: 분포의 날카로움을 조절하는 temperature
 - **in-batch negatives**: 같은 배치의 다른 정답을 음성으로 재사용
 - 핵심 위험: 실제로 관련 있는 예를 음성으로 넣는 **false negative**
 
-<div class="paper-note">이 원리는 문장 임베딩, CLIP, 현대 검색 임베딩의 공통 기반이며 5·8·9주차에 확장한다.</div>
+> [!NOTE]
+> 이 원리는 문장 임베딩, CLIP, 현대 검색 임베딩의 공통 기반이며 5·8·9주차에 확장한다.
 
 ---
 
